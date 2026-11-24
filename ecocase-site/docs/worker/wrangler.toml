@@ -1,0 +1,14 @@
+name = "ecocase-lead"
+main = "lead-worker.js"
+compatibility_date = "2026-11-01"
+account_id = "f90a97c1fae4e883f55b2a7fa449514c"
+workers_dev = false
+# Telegram token, chat id and other channel settings are set in the dashboard
+# (Settings > Variables and Secrets); keep_vars stops deploys from wiping them.
+keep_vars = true
+routes = [ { pattern = "ecocase.md/api/*", zone_name = "ecocase.md" } ]
+
+[[kv_namespaces]]
+binding = "LEADS"
+id = "3a2ac05c89634f40aad22ef25ede3d3c"
+
