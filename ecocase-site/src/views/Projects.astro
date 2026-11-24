@@ -1,0 +1,46 @@
+---
+import ProjectCards from '@/components/ProjectCards.astro';
+import LeadSection from '@/components/LeadSection.astro';
+import { PROJECTS } from '@/content/pages';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const c = PROJECTS[lang];
+---
+<section class="section" style="padding-top:32px">
+  <div class="container">
+    <div class="section-head"><h1>{c.h1}</h1><p class="lead">{c.lead}</p></div>
+    <form class="filters" data-filters aria-label={c.filterArea}>
+      <label>{c.filterArea}
+        <select name="area"><option value="">{c.all}</option><option value="0-90">≤ 90 m²</option><option value="90-130">90 ... 130 m²</option><option value="130-999">≥ 130 m²</option></select>
+      </label>
+      <label>{c.sort}
+        <select name="sort"><option value="asc">{c.sortAsc}</option><option value="desc">{c.sortDesc}</option></select>
+      </label>
+    </form>
+    <ProjectCards lang={lang} />
+    <p class="muted" data-empty hidden>{c.empty}</p>
+  </div>
+</section>
+<LeadSection lang={lang} />
+<script>
+  const f = document.querySelector<HTMLFormElement>('[data-filters]');
+  const list = document.querySelector<HTMLElement>('[data-projects]');
+  if (f && list) {
+    const run = () => {
+      const [lo, hi] = ((f.area as unknown as HTMLSelectElement).value || '0-99999').split('-').map(Number);
+      const dir = (f.sort as unknown as HTMLSelectElement).value === 'desc' ? -1 : 1;
+      const items = Array.from(list.querySelectorAll<HTMLElement>('[data-area]'));
+      let shown = 0;
+      items.sort((a, b) => dir * (Number(a.dataset.price) - Number(b.dataset.price)))
+        .forEach((el) => { const a = Number(el.dataset.area); const ok = a >= lo && a <= hi; el.hidden = !ok; if (ok) shown++; list.insertBefore(el, list.lastElementChild); });
+      document.querySelector<HTMLElement>('[data-empty]')!.hidden = shown > 0;
+    };
+    f.addEventListener('change', run);
+  }
+</script>
+<style>
+  .filters { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
+  .filters label { display: flex; flex-direction: column; gap: 6px; font-size: 15px; font-weight: 500; }
+  .filters select { min-height: 48px; padding: 8px 14px; min-width: 200px; font: 400 16px var(--font); border: 1px solid #A9A398; background: var(--white); border-radius: 0; }
+</style>

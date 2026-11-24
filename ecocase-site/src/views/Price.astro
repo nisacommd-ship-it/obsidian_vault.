@@ -1,0 +1,30 @@
+---
+import Calculator from '@/components/Calculator.astro';
+import PackagesTable from '@/components/PackagesTable.astro';
+import Faq from '@/components/Faq.astro';
+import { PRICE } from '@/content/pages';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const c = PRICE[lang];
+---
+<section class="section" style="padding-top:32px">
+  <div class="container">
+    <div class="section-head"><h1>{c.h1}</h1><p class="lead">{c.lead}</p></div>
+    <Calculator lang={lang} />
+  </div>
+</section>
+<section class="section section--soft" aria-labelledby="h-f">
+  <div class="container">
+    <h2 id="h-f">{c.factorsH}</h2>
+    <div class="grid grid--3 factors">{c.factors.map((f) => <div><h3>{f.t}</h3><p>{f.d}</p></div>)}</div>
+    <div style="margin-top:40px"><PackagesTable lang={lang} /></div>
+  </div>
+</section>
+<section class="section" aria-label={c.flatH}>
+  <div class="container grid grid--2">
+    <div><h2>{c.flatH}</h2><p>{c.flatText}</p></div>
+    <div><h2>{c.financeH}</h2><p>{c.financeText}</p></div>
+  </div>
+</section>
+<Faq lang={lang} items={c.faq} />

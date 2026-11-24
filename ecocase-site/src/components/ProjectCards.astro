@@ -1,0 +1,52 @@
+---
+import Figure from './Figure.astro';
+import projects from '@/data/projects.json';
+import { priceFrom, formatEUR } from '@/lib/pricing';
+import { pathFor, type Locale } from '@/i18n/routes';
+import { useT } from '@/i18n/ui';
+interface Props { lang: Locale; exclude?: string; heading?: 'h2' | 'h3' }
+const { lang, exclude } = Astro.props;
+const t = useT(lang);
+const list = projects.filter((p) => p.slug !== exclude);
+const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
+---
+<ul class="pc" data-projects>
+  {list.map((p) => {
+    const href = pathFor('projects', lang, p.slug);
+    const from = priceFrom(p.area);
+    return (
+      <li class="pc__item reveal" data-area={p.area} data-price={from}>
+        <a href={href} class="pc__link">
+          <Figure name={p.image} lang={lang} sizes="(min-width: 1024px) 400px, 100vw" widths={[400, 640, 800]} ratio="4 / 3" />
+          <div class="pc__body">
+            <h3 class="pc__name">{p.name}</h3>
+            <p class="pc__meta">{p.area} {t('sqm')} · {p.floors === 1 ? L('parter', 'одноэтажный', 'single storey') : `${p.floors} ${L('nivele', 'этажа', 'storeys')}`} · {L('clasa', 'класс', 'class')} {p.energyClass}</p>
+            <p class="pc__price">{t('from')} <strong>{formatEUR(from, lang)}</strong></p>
+          </div>
+        </a>
+      </li>
+    );
+  })}
+  <li class="pc__item pc__custom reveal">
+    <div class="pc__body">
+      <h3 class="pc__name">{L('Proiect la comandă', 'Проект на заказ', 'Custom design')}</h3>
+      <p>{L('Altă suprafață sau alt plan? Proiectăm casa pe aceleași panouri de paie și lut.', 'Другая площадь или планировка? Спроектируем дом на тех же панелях из соломы и глины.', 'Another size or layout? We design your house on the same straw and clay panels.')}</p>
+      <a class="btn btn--outline" href={pathFor('price', lang)}>{t('cta.calc')}</a>
+    </div>
+  </li>
+</ul>
+<style>
+  .pc { list-style: none; margin: 0; padding: 0; display: grid; gap: 24px; }
+  @media (min-width: 768px) { .pc { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .pc { grid-template-columns: repeat(3, 1fr); } }
+  .pc__item { margin: 0; background: var(--white); border: 1px solid var(--line); display: flex; flex-direction: column; }
+  .pc__link { color: inherit; text-decoration: none; display: flex; flex-direction: column; height: 100%; }
+  .pc__link:hover .pc__name { color: var(--green); text-decoration: underline; }
+  .pc__body { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 6px; }
+  .pc__name { margin: 0; font-size: 22px; }
+  .pc__meta { color: var(--muted); margin: 0; font-size: 15px; }
+  .pc__price { margin: 8px 0 0; font-size: 17px; }
+  .pc__price strong { color: var(--green); font-size: 22px; }
+  .pc__custom { background: var(--beige); border-color: var(--beige); justify-content: center; }
+  .pc__custom .btn { align-self: flex-start; margin-top: 8px; }
+</style>

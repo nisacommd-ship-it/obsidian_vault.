@@ -1,0 +1,65 @@
+---
+import Figure from '@/components/Figure.astro';
+import Faq from '@/components/Faq.astro';
+import LeadSection from '@/components/LeadSection.astro';
+import { TECH } from '@/content/pages';
+import { HOME } from '@/content/home';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const c = TECH[lang];
+const h = HOME[lang];
+---
+<section class="section" style="padding-top:32px">
+  <div class="container split">
+    <div><h1>{c.h1}</h1><p class="lead">{c.lead}</p></div>
+    <Figure name="panou-paie-lut" lang={lang} eager sizes="(min-width: 1024px) 50vw, 100vw" />
+  </div>
+</section>
+<section class="section section--beige" aria-labelledby="h-layers">
+  <div class="container">
+    <div class="section-head"><h2 id="h-layers">{h.panelH}</h2><p class="lead">{h.panelLead}</p></div>
+    <div class="layers-diagram" role="img" aria-label={h.layers.map((l) => l.t).join(', ')}>
+      {h.layers.map((l, i) => (
+        <div class={`ld ld--${i}`}><span class="ld__n">{i + 1}</span><h3>{l.t}</h3><p>{l.d}</p></div>
+      ))}
+    </div>
+  </div>
+</section>
+<section class="section" aria-labelledby="h-specs">
+  <div class="container narrow">
+    <h2 id="h-specs">{c.specsH}</h2>
+    <div class="table-wrap"><table class="table" style="min-width:0"><tbody>
+      {c.specs.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}
+    </tbody></table></div>
+    <p class="muted" style="font-size:14px;margin-top:10px">{c.specsNote}</p>
+  </div>
+</section>
+<section class="section section--soft" aria-labelledby="h-prod">
+  <div class="container split">
+    <Figure name="productie" lang={lang} ratio="1440 / 695" />
+    <div><h2 id="h-prod">{c.prodH}</h2><p>{c.prodText}</p></div>
+  </div>
+</section>
+<section class="section" aria-labelledby="h-mount">
+  <div class="container split">
+    <div><h2 id="h-mount">{c.mountH}</h2><p>{c.mountText}</p><h2>{c.certH}</h2><p>{c.certText}</p></div>
+    <Figure name="montaj-panouri" lang={lang} />
+  </div>
+</section>
+<Faq lang={lang} items={c.faq} />
+<LeadSection lang={lang} />
+<style>
+  .split { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 1024px) { .split { grid-template-columns: 1fr 1fr; gap: 64px; } }
+  .narrow { max-width: 880px; }
+  .layers-diagram { display: grid; gap: 0; }
+  @media (min-width: 900px) { .layers-diagram { grid-template-columns: 1fr 1.4fr 1fr; } }
+  .ld { padding: 28px; min-height: 220px; }
+  .ld--0 { background: #C9A97A; color: var(--graphite); }
+  .ld--1 { background: repeating-linear-gradient(100deg, #E9D9A8 0 6px, #D9C48A 6px 9px); color: var(--graphite); }
+  .ld--2 { background: #7A5B3D; color: var(--white); }
+  .ld--2 h3 { color: var(--white); }
+  .ld__n { display: inline-grid; place-items: center; width: 36px; height: 36px; background: var(--green); color: var(--white); font-weight: 500; margin-bottom: 12px; }
+  .ld p { margin: 0; }
+</style>

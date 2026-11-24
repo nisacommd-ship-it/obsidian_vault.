@@ -1,0 +1,48 @@
+---
+import Base from '@/layouts/Base.astro';
+import Home from '@/views/Home.astro';
+import Turnkey from '@/views/Turnkey.astro';
+import Projects from '@/views/Projects.astro';
+import ProjectPage from '@/views/ProjectPage.astro';
+import Price from '@/views/Price.astro';
+import Technology from '@/views/Technology.astro';
+import About from '@/views/About.astro';
+import Contact from '@/views/Contact.astro';
+import Legal from '@/views/Legal.astro';
+import Thanks from '@/views/Thanks.astro';
+import { buildRoutes, type PageEntry } from '@/lib/pages';
+import { faqPage, product } from '@/lib/schema';
+import { SITE } from '@/config/site';
+import { priceFrom, pricing, roundTo } from '@/lib/pricing';
+import { IMAGES } from '@/lib/images';
+
+export function getStaticPaths() {
+  return buildRoutes().map((e) => ({ params: { path: e.path.replace(/^\/|\/$/g, '') }, props: { entry: e } }));
+}
+
+const { entry } = Astro.props as { entry: PageEntry };
+const { lang, key, project } = entry;
+const url = new URL(entry.path, SITE.url).href;
+const schema: object[] = [];
+if (entry.faq?.length) schema.push(faqPage(entry.faq, url));
+if (project) {
+  const hi = roundTo(project.area * Math.max(...pricing.packages.map((p) => p.perSqm)), 100);
+  schema.push(product({
+    url, name: project.name, description: project.summary[lang], image: new URL(IMAGES[project.image].src, SITE.url).href,
+    lowPrice: priceFrom(project.area), highPrice: hi, area: project.area, energyClass: project.energyClass, lang,
+  }));
+}
+---
+<Base lang={lang} title={entry.title} description={entry.description} alternates={entry.alternates}
+  crumbs={entry.crumbs} schema={schema} noindex={entry.noindex} pageType={entry.pageType}>
+  {key === 'home' && <Home lang={lang} />}
+  {key === 'turnkey' && <Turnkey lang={lang} />}
+  {key === 'projects' && !project && <Projects lang={lang} />}
+  {key === 'projects' && project && <ProjectPage lang={lang} project={project} />}
+  {key === 'price' && <Price lang={lang} />}
+  {key === 'technology' && <Technology lang={lang} />}
+  {key === 'about' && <About lang={lang} />}
+  {key === 'contact' && <Contact lang={lang} />}
+  {(key === 'privacy' || key === 'cookies') && entry.legal && <Legal lang={lang} doc={entry.legal} />}
+  {key === 'thanks' && <Thanks lang={lang} />}
+</Base>

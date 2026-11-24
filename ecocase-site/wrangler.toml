@@ -1,0 +1,10 @@
+# Cloudflare Pages project "ecocase". Secrets are NOT stored here:
+# set them in Pages > Settings > Environment variables (see docs/SETUP.md).
+name = "ecocase"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ecocase-leads"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"

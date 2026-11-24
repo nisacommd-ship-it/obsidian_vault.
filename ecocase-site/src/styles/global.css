@@ -40,7 +40,7 @@
   --graphite: #2F3235;
   --white: #FFFFFF;
   /* Functional tones, not brand colours */
-  --muted: #5B5F63;      /* 6.4:1 on white, 4.6:1 on beige */
+  --muted: #4F5357;      /* 7.8:1 on white, 5.4:1 on beige */
   --line: #DDD6C8;
   --beige-soft: #F3EDE2; /* beige at ~40% on white, for large calm surfaces */
   --error: #A3301B;

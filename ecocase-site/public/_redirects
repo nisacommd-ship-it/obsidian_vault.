@@ -1,0 +1,9 @@
+# Root opens the primary language (brief: ecocase.md -> /ro/)
+/                 /ro/            301
+# Stub-era URLs keep working
+/sergiu           /ro/contact/    302
+/index.html       /ro/            301
+# Missing trailing slash -> with slash (Pages also does this automatically)
+/ro               /ro/            301
+/ru               /ru/            301
+/en               /en/            301

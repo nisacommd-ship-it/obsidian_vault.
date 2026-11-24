@@ -1,0 +1,97 @@
+---
+import { Image } from 'astro:assets';
+import logoUrl from '@/assets/brand/logo-h-white.svg?url';
+import gcip from '@/assets/partners/gcip.png';
+import unido from '@/assets/partners/unido.png';
+import gef from '@/assets/partners/gef.png';
+import cned from '@/assets/partners/cned.png';
+import { SITE, socialLinks } from '@/config/site';
+import { pathFor, type Locale } from '@/i18n/routes';
+import { useT } from '@/i18n/ui';
+
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const t = useT(lang);
+const pages = ['turnkey', 'projects', 'price', 'technology', 'about', 'contact'] as const;
+const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
+---
+<footer class="ftr on-dark">
+  <div class="container ftr__grid">
+    <div class="ftr__brand">
+      <img src={logoUrl} alt={SITE.brand} width="170" height="50" loading="lazy" />
+      <p class="ftr__tag">{L('Case modulare din paie și lut', 'Модульные дома из соломы и глины', 'Modular straw and clay houses')}</p>
+    </div>
+    <div>
+      <h2 class="ftr__h">{t('footer.contacts')}</h2>
+      <ul class="ftr__list">
+        <li><a href={`tel:${SITE.phone}`} data-track="phone_click">{SITE.phoneDisplay}</a></li>
+        <li><a href={`mailto:${SITE.email}`} data-track="email_click">{SITE.email}</a></li>
+        <li>
+          <a href={SITE.whatsapp} rel="noopener" data-track="messenger_click" data-channel="whatsapp">WhatsApp</a> ·
+          <a href={SITE.viber} data-track="messenger_click" data-channel="viber">Viber</a> ·
+          <a href={SITE.telegram} rel="noopener" data-track="messenger_click" data-channel="telegram">Telegram</a>
+        </li>
+        <li><a href="/sergiu.vcf" data-track="vcard_download">{L('Salvează contactul', 'Сохранить контакт', 'Save contact')}</a></li>
+      </ul>
+      {socialLinks.length > 0 && (
+        <ul class="ftr__social">{socialLinks.map((s) => <li><a href={s.url} rel="noopener me">{s.name}</a></li>)}</ul>
+      )}
+    </div>
+    <div>
+      <h2 class="ftr__h">{t('footer.pages')}</h2>
+      <ul class="ftr__list">
+        {pages.map((p) => <li><a href={pathFor(p, lang)}>{t(`nav.${p}`)}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <h2 class="ftr__h">{t('footer.legal')}</h2>
+      <ul class="ftr__list">
+        <li><a href={pathFor('privacy', lang)}>{L('Politica de confidențialitate', 'Политика конфиденциальности', 'Privacy policy')}</a></li>
+        <li><a href={pathFor('cookies', lang)}>{L('Politica cookie', 'Политика cookie', 'Cookie policy')}</a></li>
+        <li><button type="button" class="ftr__linkbtn" data-cookie-open>{L('Setări cookie', 'Настройки cookie', 'Cookie settings')}</button></li>
+      </ul>
+      <p class="ftr__small">{SITE.legalName}<br />IDNO {SITE.idno}</p>
+    </div>
+  </div>
+
+  <div class="ftr__grant">
+    <div class="container ftr__grant-in">
+      <div class="ftr__logos">
+        <Image src={gcip} alt="GCIP Moldova" height={44} loading="lazy" />
+        <Image src={unido} alt="UNIDO" height={28} loading="lazy" />
+        <Image src={gef} alt="GEF" height={44} loading="lazy" />
+        <Image src={cned} alt="CNED" height={44} loading="lazy" />
+      </div>
+      <p>{t('footer.grant')}</p>
+    </div>
+  </div>
+
+  <div class="container ftr__bottom">
+    <span>© 2026 {SITE.brand}. {t('footer.rights')}</span>
+    <span>{t('footer.viz')}</span>
+  </div>
+</footer>
+
+<style>
+  .ftr { background: var(--green); color: var(--white); padding-top: clamp(48px, 7vw, 80px); font-size: 15px; }
+  .ftr a, .ftr__linkbtn { color: var(--white); text-decoration: none; }
+  .ftr a:hover, .ftr__linkbtn:hover { color: var(--beige); text-decoration: underline; }
+  .ftr__grid { display: grid; gap: 32px; padding-bottom: 48px; }
+  @media (min-width: 768px) { .ftr__grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
+  .ftr__brand img { width: 170px; height: auto; }
+  .ftr__tag { color: var(--beige); font-weight: 300; font-size: 17px; margin-top: 14px; }
+  .ftr__h { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--beige); margin-bottom: 14px; font-weight: 500; }
+  .ftr__list, .ftr__social { list-style: none; margin: 0; padding: 0; }
+  .ftr__list li { margin: 0 0 6px; }
+  .ftr__list a { display: inline-block; padding: 6px 0; }
+  .ftr__social { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; text-transform: capitalize; }
+  .ftr__linkbtn { background: none; border: 0; padding: 6px 0; font: inherit; cursor: pointer; }
+  .ftr__small { color: var(--beige); margin-top: 16px; font-size: 14px; }
+  .ftr__grant { background: var(--white); color: var(--graphite); padding: 24px 0; }
+  .ftr__grant-in { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 36px; }
+  .ftr__grant p { margin: 0; flex: 1 1 320px; font-size: 14px; color: var(--muted); }
+  .ftr__logos { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+  .ftr__logos img { width: auto; }
+  .ftr__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-block: 18px 96px; font-size: 13px; color: var(--beige); }
+  @media (min-width: 1024px) { .ftr__bottom { padding-bottom: 18px; } }
+</style>

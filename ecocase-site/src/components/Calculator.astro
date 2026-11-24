@@ -1,0 +1,117 @@
+---
+import { pricing } from '@/lib/pricing';
+import projects from '@/data/projects.json';
+import { useT } from '@/i18n/ui';
+import type { Locale } from '@/i18n/routes';
+import LeadForm from './LeadForm.astro';
+
+interface Props { lang: Locale; id?: string }
+const { lang, id = 'calculator' } = Astro.props;
+const t = useT(lang);
+const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
+const P = pricing;
+const data = {
+  packages: P.packages.map((p) => ({ id: p.id, perSqm: p.perSqm, weeks: p.weeks, label: p.label[lang] })),
+  floors: P.floors, foundations: P.foundations, options: P.options, regions: P.regions,
+  spread: P.rangeSpread, lang,
+  projects: projects.map((p) => ({ slug: p.slug, name: p.name, area: p.area })),
+  strings: { weeks: L('săptămâni', 'недель', 'weeks') },
+};
+---
+<div class="calc" id={id} data-calc>
+  <script type="application/json" data-calc-data set:html={JSON.stringify(data)} />
+  <form class="calc__form" data-calc-form aria-label={L('Calculator de preț', 'Калькулятор стоимости', 'Price calculator')}>
+    <div class="cf">
+      <label for="c-project">{L('Proiect', 'Проект', 'Project')}</label>
+      <select id="c-project" name="project">
+        <option value="">{L('Suprafață proprie', 'Своя площадь', 'Custom area')}</option>
+        {projects.map((p) => <option value={p.slug} data-area={p.area} selected={p.slug === 'bordeias-80'}>{p.name} · {p.area} m²</option>)}
+      </select>
+    </div>
+    <div class="cf">
+      <label for="c-area">{L('Suprafața, m²', 'Площадь, м²', 'Floor area, m²')} <output for="c-area" data-area-out>80</output></label>
+      <input id="c-area" name="area" type="range" min={P.minArea} max={P.maxArea} step="5" value="80" />
+    </div>
+    <fieldset class="cf">
+      <legend>{L('Complectare', 'Комплектация', 'Package')}</legend>
+      <div class="seg">
+        {P.packages.map((p, i) => (
+          <label><input type="radio" name="package" value={p.id} checked={i === 2} /><span>{p.label[lang]}</span></label>
+        ))}
+      </div>
+    </fieldset>
+    <div class="cf cf--2">
+      <div>
+        <label for="c-floors">{L('Nivele', 'Этажность', 'Storeys')}</label>
+        <select id="c-floors" name="floors">{P.floors.map((f) => <option value={f.id}>{f.label[lang]}</option>)}</select>
+      </div>
+      <div>
+        <label for="c-found">{L('Fundație', 'Фундамент', 'Foundation')}</label>
+        <select id="c-found" name="foundation">{P.foundations.map((f) => <option value={f.id}>{f.label[lang]}</option>)}</select>
+      </div>
+    </div>
+    <fieldset class="cf">
+      <legend>{L('Opțiuni', 'Опции', 'Options')}</legend>
+      <div class="chk">
+        {P.options.map((o) => <label><input type="checkbox" name="opt" value={o.id} /> {o.label[lang]}</label>)}
+      </div>
+    </fieldset>
+    <div class="cf">
+      <label for="c-region">{L('Regiunea', 'Регион', 'Region')}</label>
+      <select id="c-region" name="region">{P.regions.map((r) => <option value={r.id}>{r.label[lang]}</option>)}</select>
+    </div>
+  </form>
+
+  <div class="calc__res on-dark" aria-live="polite">
+    <span class="eyebrow">{L('Preț orientativ', 'Ориентировочная цена', 'Indicative price')}</span>
+    <p class="calc__price"><span data-res-range>...</span></p>
+    <dl class="calc__facts">
+      <div><dt>{L('Termen de construcție', 'Срок строительства', 'Build time')}</dt><dd data-res-weeks>...</dd></div>
+      <div><dt>{L('Preț pe m²', 'Цена за м²', 'Price per m²')}</dt><dd data-res-sqm>...</dd></div>
+      <div><dt>{L('Facturi la încălzire', 'Счета за отопление', 'Heating bills')}</dt><dd>{L('cu circa 75% mai mici decât într-un apartament, conform calculelor companiei', 'примерно на 75% ниже, чем в квартире, по расчётам компании', 'about 75% lower than in a city flat, per company calculations')}</dd></div>
+    </dl>
+    {P.draft && <p class="calc__draft">{L('Tarife preliminare, în curs de actualizare.', 'Предварительные ставки, уточняются.', 'Preliminary rates, being updated.')}</p>}
+    <p class="calc__disc">{t('calc.disclaimer')}</p>
+    <a href={`#${id}-lead`} class="btn btn--beige" data-calc-cta>{L('Primește calculul detaliat', 'Получить детальный расчёт', 'Get a detailed estimate')}</a>
+  </div>
+</div>
+<div class="calc__lead">
+  <LeadForm lang={lang} source="calculator" id={`${id}-lead`} compact
+    title={L('Calculul detaliat pe telefon', 'Детальный расчёт по телефону', 'Detailed estimate by phone')}
+    lead={L('Lasă numărul: managerul îți trimite calculul pe proiectul ales și răspunde la întrebări.', 'Оставьте номер: менеджер пришлёт расчёт по выбранному проекту и ответит на вопросы.', 'Leave your number: our manager will send the estimate for the chosen project and answer your questions.')} />
+</div>
+
+<style>
+  .calc { display: grid; gap: 0; border: 1px solid var(--line); background: var(--white); }
+  @media (min-width: 1024px) { .calc { grid-template-columns: 1.3fr 1fr; } }
+  .calc__form { padding: clamp(20px, 4vw, 40px); display: grid; gap: 22px; }
+  .cf { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .cf label, .cf legend { font-size: 15px; font-weight: 500; }
+  .cf--2 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 560px) { .cf--2 { grid-template-columns: 1fr 1fr; } }
+  .cf--2 > div { display: flex; flex-direction: column; gap: 8px; }
+  .cf select { min-height: 48px; padding: 10px 14px; font: 400 16px var(--font); border: 1px solid #A9A398; background: var(--white); color: var(--graphite); border-radius: 0; }
+  .cf output { float: right; font-weight: 500; color: var(--green); font-size: 18px; }
+  input[type=range] { width: 100%; accent-color: var(--green); min-height: 32px; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--green); }
+  .seg label { position: relative; cursor: pointer; }
+  .seg input { position: absolute; opacity: 0; inset: 0; }
+  .seg span { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 48px; padding: 8px; font-size: 15px; font-weight: 400; color: var(--green); }
+  .seg label + label span { border-left: 1px solid var(--green); }
+  .seg input:checked + span { background: var(--green); color: var(--white); }
+  .seg input:focus-visible + span { outline: 3px solid var(--graphite); outline-offset: -3px; }
+  .chk { display: grid; grid-template-columns: 1fr; gap: 4px 16px; }
+  @media (min-width: 560px) { .chk { grid-template-columns: 1fr 1fr; } }
+  .chk label { font-weight: 400; display: flex; gap: 10px; align-items: center; min-height: 40px; cursor: pointer; }
+  .chk input { width: 20px; height: 20px; accent-color: var(--green); }
+  .calc__res { background: var(--green); color: var(--white); padding: clamp(24px, 4vw, 44px); display: flex; flex-direction: column; gap: 14px; }
+  .calc__res .eyebrow { color: var(--beige); margin: 0; }
+  .calc__price { font-size: clamp(30px, 3.6vw, 44px); font-weight: 500; line-height: 1.1; margin: 0; }
+  .calc__facts { margin: 0; display: grid; gap: 12px; border-top: 1px solid rgba(228, 213, 188, .35); padding-top: 16px; }
+  .calc__facts dt { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--beige); }
+  .calc__facts dd { margin: 2px 0 0; font-size: 17px; }
+  .calc__draft { color: var(--beige); font-size: 14px; margin: 0; }
+  .calc__disc { font-size: 13px; color: var(--beige); margin: 0; }
+  .calc__res .btn { margin-top: auto; }
+  .calc__lead { margin-top: 24px; }
+</style>

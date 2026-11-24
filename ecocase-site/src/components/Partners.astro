@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import gcip from '@/assets/partners/gcip.png';
+import unido from '@/assets/partners/unido.png';
+import gef from '@/assets/partners/gef.png';
+import cned from '@/assets/partners/cned.png';
+---
+<div class="partners">
+  <Image src={gcip} alt="GCIP Moldova" height={56} loading="lazy" />
+  <Image src={unido} alt="UNIDO" height={34} loading="lazy" />
+  <Image src={gef} alt="GEF, Global Environment Facility" height={56} loading="lazy" />
+  <Image src={cned} alt="CNED, Centrul Național pentru Energie Durabilă" height={56} loading="lazy" />
+</div>
+<style>
+  .partners { display: flex; flex-wrap: wrap; align-items: center; gap: 28px 44px; background: var(--white); padding: 24px 28px; }
+  .partners img { width: auto; }
+</style>

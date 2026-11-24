@@ -1,0 +1,154 @@
+---
+import { PUBLIC_ENV, SITE } from '@/config/site';
+import { DISTRICTS, useT } from '@/i18n/ui';
+import { pathFor, type Locale } from '@/i18n/routes';
+
+interface Props {
+  lang: Locale;
+  source?: 'form' | 'calculator' | 'project' | 'visit';
+  title?: string;
+  lead?: string;
+  id?: string;
+  project?: string;
+  compact?: boolean;
+}
+const { lang, source = 'form', project = '', compact = false } = Astro.props;
+const t = useT(lang);
+const visit = source === 'visit';
+const id = Astro.props.id ?? (visit ? 'visit' : 'lead');
+const title = Astro.props.title ?? (visit ? t('form.visit.title') : t('form.title'));
+const lead = Astro.props.lead ?? (visit ? t('form.visit.lead') : t('form.lead'));
+const thanks = pathFor('thanks', lang);
+const minDate = '2026-11-25';
+---
+<form class:list={['lf', { 'lf--compact': compact }]} id={id} method="post" action="/api/lead" novalidate
+  data-lead-form data-source={source} data-thanks={thanks} data-wa={SITE.whatsapp} aria-labelledby={`${id}-h`}>
+  <h2 id={`${id}-h`} class="lf__h">{title}</h2>
+  <p class="lf__lead">{lead}</p>
+
+  <input type="hidden" name="lang" value={lang} />
+  <input type="hidden" name="source" value={source} />
+  <input type="hidden" name="project" value={project} />
+  <input type="hidden" name="page" value="" data-fill="page" />
+  <input type="hidden" name="utm" value="" data-fill="utm" />
+  <input type="hidden" name="calc" value="" data-fill="calc" />
+  <input type="hidden" name="redirect" value={thanks} />
+  <div class="lf__hp" aria-hidden="true">
+    <label>Company <input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <div class="lf__grid">
+    <div class="f">
+      <label for={`${id}-name`}>{t('form.name')} <span aria-hidden="true">*</span></label>
+      <input id={`${id}-name`} name="name" type="text" autocomplete="name" required maxlength="80" aria-describedby={`${id}-name-e`} />
+      <p class="f__err" id={`${id}-name-e`} data-msg={t('form.invalid.name')}></p>
+    </div>
+    <div class="f">
+      <label for={`${id}-phone`}>{t('form.phone')} <span aria-hidden="true">*</span></label>
+      <input id={`${id}-phone`} name="phone" type="tel" inputmode="tel" autocomplete="tel" required value="+373 "
+        pattern="^\+?[0-9 ()-]{8,20}$" maxlength="20" aria-describedby={`${id}-phone-e`} data-phone />
+      <p class="f__err" id={`${id}-phone-e`} data-msg={t('form.invalid.phone')}></p>
+    </div>
+
+    {visit ? (
+      <>
+        <div class="f">
+          <label for={`${id}-date`}>{t('form.date')}</label>
+          <input id={`${id}-date`} name="visit_date" type="date" min={minDate} data-min-tomorrow />
+        </div>
+        <div class="f">
+          <label for={`${id}-time`}>{t('form.time')}</label>
+          <select id={`${id}-time`} name="visit_time">
+            {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'].map((h) => <option>{h}</option>)}
+          </select>
+        </div>
+      </>
+    ) : !compact && (
+      <>
+        <div class="f">
+          <label for={`${id}-email`}>{t('form.email')} <span class="muted">({t('form.optional')})</span></label>
+          <input id={`${id}-email`} name="email" type="email" autocomplete="email" maxlength="120" />
+        </div>
+        <div class="f">
+          <label for={`${id}-district`}>{t('form.district')}</label>
+          <select id={`${id}-district`} name="district">
+            <option value="">{t('district.placeholder')}</option>
+            {DISTRICTS.map((d) => <option value={d.id}>{d[lang]}</option>)}
+          </select>
+        </div>
+        <div class="f">
+          <label for={`${id}-area`}>{t('form.area')}</label>
+          <input id={`${id}-area`} name="area" type="number" inputmode="numeric" min="30" max="400" step="5" />
+        </div>
+        <fieldset class="f f--radio">
+          <legend>{t('form.plot')}</legend>
+          <label><input type="radio" name="plot" value="yes" /> {t('form.plot.yes')}</label>
+          <label><input type="radio" name="plot" value="no" /> {t('form.plot.no')}</label>
+          <label><input type="radio" name="plot" value="searching" /> {t('form.plot.search')}</label>
+        </fieldset>
+      </>
+    )}
+
+    {!compact && (
+      <fieldset class="f f--radio f--wide">
+        <legend>{t('form.contact')}</legend>
+        <label><input type="radio" name="contact_method" value="call" checked /> {t('form.contact.call')}</label>
+        <label><input type="radio" name="contact_method" value="whatsapp" /> WhatsApp</label>
+        <label><input type="radio" name="contact_method" value="viber" /> Viber</label>
+        <label><input type="radio" name="contact_method" value="telegram" /> Telegram</label>
+      </fieldset>
+    )}
+    {!compact && (
+      <div class="f f--wide">
+        <label for={`${id}-comment`}>{t('form.comment')} <span class="muted">({t('form.optional')})</span></label>
+        <textarea id={`${id}-comment`} name="comment" rows="3" maxlength="1500"></textarea>
+      </div>
+    )}
+  </div>
+
+  <div class="f f--check">
+    <label>
+      <input type="checkbox" name="consent" value="yes" required aria-describedby={`${id}-consent-e`} />
+      <span>{t('form.consent')} <a href={pathFor('privacy', lang)}>{t('form.consent.link')}</a>.</span>
+    </label>
+    <p class="f__err" id={`${id}-consent-e`} data-msg={t('form.invalid.consent')}></p>
+  </div>
+
+  {PUBLIC_ENV.turnstileSiteKey && <div class="cf-turnstile" data-sitekey={PUBLIC_ENV.turnstileSiteKey} data-size="flexible" data-appearance="interaction-only"></div>}
+
+  <button type="submit" class="btn lf__submit" data-sending={t('form.sending')}>{visit ? t('form.visit.submit') : t('form.submit')}</button>
+  <p class="lf__status" role="status" aria-live="polite" data-error={t('form.error')}></p>
+</form>
+
+<style>
+  .lf { background: var(--white); padding: clamp(24px, 4vw, 44px); border: 1px solid var(--line); }
+  .lf__h { font-size: clamp(24px, 2.6vw, 32px); }
+  .lf__lead { color: var(--muted); margin-bottom: 24px; }
+  .lf__grid { display: grid; gap: 16px 20px; }
+  @media (min-width: 640px) { .lf__grid { grid-template-columns: 1fr 1fr; } .f--wide { grid-column: 1 / -1; } }
+  .f { display: flex; flex-direction: column; gap: 6px; min-width: 0; border: 0; padding: 0; margin: 0; }
+  .f label, .f legend { font-size: 15px; font-weight: 500; color: var(--graphite); }
+  .f input[type=text], .f input[type=tel], .f input[type=email], .f input[type=number], .f input[type=date], .f select, .f textarea {
+    width: 100%; min-height: 48px; padding: 10px 14px; font: 400 16px/1.4 var(--font); color: var(--graphite);
+    background: var(--white); border: 1px solid #A9A398; border-radius: 0; appearance: none;
+  }
+  .f select { background-image: linear-gradient(45deg, transparent 50%, var(--green) 50%), linear-gradient(135deg, var(--green) 50%, transparent 50%); background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 36px; }
+  .f input:focus, .f select:focus, .f textarea:focus { border-color: var(--green); outline: 2px solid var(--green); outline-offset: 0; }
+  .f [aria-invalid='true'] { border-color: var(--error); }
+  .f--radio { flex-direction: row; flex-wrap: wrap; gap: 4px 18px; }
+  .f--radio legend { width: 100%; margin-bottom: 6px; }
+  .f--radio label, .f--check label { font-weight: 400; display: inline-flex; gap: 8px; align-items: center; min-height: 40px; cursor: pointer; }
+  .f--check { margin: 20px 0 8px; }
+  .f--check label { align-items: flex-start; font-size: 15px; }
+  .f--check input { margin-top: 4px; }
+  input[type=radio], input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--green); flex: none; }
+  .f__err { color: var(--error); font-size: 14px; margin: 0; min-height: 0; }
+  .f__err:empty { display: none; }
+  .lf__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .cf-turnstile { margin: 12px 0; }
+  .lf__submit { width: 100%; margin-top: 12px; }
+  @media (min-width: 640px) { .lf__submit { width: auto; min-width: 240px; } }
+  .lf__status { margin: 14px 0 0; font-size: 15px; }
+  .lf__status.is-error { color: var(--error); }
+  .lf--compact .lf__grid { grid-template-columns: 1fr; }
+</style>

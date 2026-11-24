@@ -1,0 +1,51 @@
+---
+import Figure from '@/components/Figure.astro';
+import ProjectCards from '@/components/ProjectCards.astro';
+import PackagesTable from '@/components/PackagesTable.astro';
+import Steps from '@/components/Steps.astro';
+import Faq from '@/components/Faq.astro';
+import LeadSection from '@/components/LeadSection.astro';
+import { TURNKEY } from '@/content/pages';
+import { HOME } from '@/content/home';
+import { pathFor, type Locale } from '@/i18n/routes';
+import { useT } from '@/i18n/ui';
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const c = TURNKEY[lang];
+const t = useT(lang);
+---
+<section class="section page-hero">
+  <div class="container split">
+    <div>
+      <h1>{c.h1}</h1>
+      <p class="lead">{c.lead}</p>
+      <div class="btn-row"><a class="btn" href={pathFor('price', lang)}>{t('cta.calc')}</a><a class="btn btn--outline" href="#lead">{t('cta.offer')}</a></div>
+    </div>
+    <Figure name="casa-seara" lang={lang} eager sizes="(min-width: 1024px) 50vw, 100vw" />
+  </div>
+</section>
+<section class="section section--soft" aria-labelledby="h-inc">
+  <div class="container"><h2 id="h-inc">{c.includesH}</h2><PackagesTable lang={lang} area={80} caption={c.includesH} /></div>
+</section>
+<section class="section" aria-labelledby="h-pr">
+  <div class="container"><h2 id="h-pr">{t('nav.projects')}</h2><ProjectCards lang={lang} /></div>
+</section>
+<section class="section section--soft" aria-labelledby="h-cmp">
+  <div class="container">
+    <div class="section-head"><h2 id="h-cmp">{c.compareH}</h2><p>{c.compareLead}</p></div>
+    <div class="table-wrap"><table class="table">
+      <thead><tr>{c.compareCols.map((h) => <th scope="col">{h}</th>)}</tr></thead>
+      <tbody>{c.compareRows.map((r) => <tr><th scope="row">{r[0]}</th>{r.slice(1).map((v) => <td>{v}</td>)}</tr>)}</tbody>
+    </table></div>
+  </div>
+</section>
+<section class="section" aria-labelledby="h-st">
+  <div class="container"><h2 id="h-st">{HOME[lang].stepsH}</h2><Steps steps={HOME[lang].steps} /></div>
+</section>
+<Faq lang={lang} items={c.faq} />
+<LeadSection lang={lang} />
+<style>
+  .page-hero { padding-top: 32px; }
+  .split { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 1024px) { .split { grid-template-columns: 1fr 1fr; gap: 64px; } }
+</style>

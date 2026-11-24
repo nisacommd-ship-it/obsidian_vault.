@@ -1,0 +1,48 @@
+---
+import LeadForm from '@/components/LeadForm.astro';
+import { CONTACT } from '@/content/pages';
+import { SITE } from '@/config/site';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const c = CONTACT[lang];
+const a = SITE.pilotAddress;
+const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
+---
+<section class="section" style="padding-top:32px">
+  <div class="container ct">
+    <div>
+      <h1>{c.h1}</h1>
+      <p class="lead">{c.lead}</p>
+      <dl class="ct__list">
+        <div><dt>{L('Telefon', 'Телефон', 'Phone')}</dt><dd><a href={`tel:${SITE.phone}`} data-track="phone_click">{SITE.phoneDisplay}</a></dd></div>
+        <div><dt>E-mail</dt><dd><a href={`mailto:${SITE.email}`} data-track="email_click">{SITE.email}</a></dd></div>
+        <div><dt>{L('Mesagerie', 'Мессенджеры', 'Messengers')}</dt><dd>
+          <a href={SITE.whatsapp} rel="noopener" data-track="messenger_click" data-channel="whatsapp">WhatsApp</a>,
+          <a href={SITE.viber} data-track="messenger_click" data-channel="viber">Viber</a>,
+          <a href={SITE.telegram} rel="noopener" data-track="messenger_click" data-channel="telegram">Telegram</a>
+        </dd></div>
+        <div><dt>{c.hoursLabel}</dt><dd>{c.hours}</dd></div>
+        {a
+          ? <div><dt>{L('Adresa', 'Адрес', 'Address')}</dt><dd><address>{a.street}, {a.locality}</address></dd></div>
+          : <div><dt>&nbsp;</dt><dd class="muted">{c.addressPending}</dd></div>}
+      </dl>
+      <a class="btn btn--outline" href="/sergiu.vcf" data-track="vcard_download">{c.vcard}</a>
+      <p class="muted ct__legal"><strong>{c.legal}:</strong> {SITE.legalName}, IDNO {SITE.idno}</p>
+      {a && <iframe class="ct__map" title="Map" loading="lazy" src={`https://www.openstreetmap.org/export/embed.html?bbox=${a.lng - 0.01},${a.lat - 0.006},${a.lng + 0.01},${a.lat + 0.006}&marker=${a.lat},${a.lng}`}></iframe>}
+    </div>
+    <LeadForm lang={lang} source="visit" />
+  </div>
+</section>
+<style>
+  .ct { display: grid; gap: 40px; align-items: start; }
+  @media (min-width: 1024px) { .ct { grid-template-columns: 1fr 1.2fr; gap: 64px; } }
+  .ct__list { margin: 24px 0; border-top: 1px solid var(--line); }
+  .ct__list div { display: grid; grid-template-columns: 1fr; gap: 2px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  @media (min-width: 560px) { .ct__list div { grid-template-columns: 180px 1fr; } }
+  .ct__list dt { color: var(--muted); font-size: 15px; }
+  .ct__list dd { margin: 0; font-size: 18px; }
+  .ct__list address { font-style: normal; }
+  .ct__legal { font-size: 14px; margin-top: 20px; }
+  .ct__map { width: 100%; height: 320px; border: 0; margin-top: 16px; }
+</style>

@@ -1,0 +1,37 @@
+---
+import Figure from '@/components/Figure.astro';
+import Partners from '@/components/Partners.astro';
+import LeadSection from '@/components/LeadSection.astro';
+import { ABOUT } from '@/content/pages';
+import { FACT_LINES } from '@/content/facts';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const c = ABOUT[lang];
+---
+<section class="section" style="padding-top:32px">
+  <div class="container split">
+    <div><h1>{c.h1}</h1><p class="lead">{c.lead}</p></div>
+    <Figure name="familie" lang={lang} eager sizes="(min-width: 1024px) 50vw, 100vw" />
+  </div>
+</section>
+<section class="section section--soft" aria-labelledby="h-story">
+  <div class="container split">
+    <div><h2 id="h-story">{c.storyH}</h2>{c.story.map((p) => <p>{p}</p>)}</div>
+    <blockquote class="quote"><p>{c.quote}</p><footer>{c.quoteBy}</footer></blockquote>
+  </div>
+</section>
+<section class="section" aria-labelledby="h-grant">
+  <div class="container"><h2 id="h-grant">{c.grantH}</h2><p class="lead">{c.grantText}</p><Partners /></div>
+</section>
+<section class="section section--soft" aria-labelledby="h-num">
+  <div class="container" style="max-width:880px"><h2 id="h-num">{c.numbersH}</h2><ul>{FACT_LINES[lang].map((f) => <li>{f}</li>)}</ul></div>
+</section>
+<LeadSection lang={lang} />
+<style>
+  .split { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 1024px) { .split { grid-template-columns: 1fr 1fr; gap: 64px; } }
+  .quote { margin: 0; background: var(--green); color: var(--white); padding: clamp(28px, 4vw, 48px); }
+  .quote p { font-size: clamp(19px, 2vw, 23px); font-weight: 300; line-height: 1.5; }
+  .quote footer { color: var(--beige); font-size: 15px; }
+</style>

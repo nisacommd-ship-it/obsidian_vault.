@@ -1,0 +1,21 @@
+---
+import { useT } from '@/i18n/ui';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale; items: { name: string; path: string }[] }
+const { lang, items } = Astro.props;
+const t = useT(lang);
+---
+<nav class="bc container" aria-label={t('breadcrumb.label')}>
+  <ol>
+    {items.map((it, i) => (
+      <li>{i < items.length - 1 ? <a href={it.path}>{it.name}</a> : <span aria-current="page">{it.name}</span>}</li>
+    ))}
+  </ol>
+</nav>
+<style>
+  .bc ol { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 0; margin: 0; padding: 18px 0 0; font-size: 14px; color: var(--muted); }
+  .bc li { margin: 0; }
+  .bc li + li::before { content: '/'; margin: 0 10px; color: var(--line); }
+  .bc a { color: var(--muted); text-decoration: none; }
+  .bc a:hover { color: var(--green); text-decoration: underline; }
+</style>

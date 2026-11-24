@@ -1,0 +1,125 @@
+---
+import Figure from '@/components/Figure.astro';
+import ProjectCards from '@/components/ProjectCards.astro';
+import Steps from '@/components/Steps.astro';
+import Faq from '@/components/Faq.astro';
+import Partners from '@/components/Partners.astro';
+import LeadSection from '@/components/LeadSection.astro';
+import { HOME } from '@/content/home';
+import { FACT_LINES } from '@/content/facts';
+import { priceFrom, formatEUR } from '@/lib/pricing';
+import { pathFor, type Locale } from '@/i18n/routes';
+import { useT } from '@/i18n/ui';
+interface Props { lang: Locale }
+const { lang } = Astro.props;
+const c = HOME[lang];
+const t = useT(lang);
+const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
+---
+<section class="hero">
+  <div class="hero__text">
+    <span class="eyebrow">{c.eyebrow}</span>
+    <h1>{c.h1}<br /><span class="light">{c.h1Light}</span></h1>
+    <p class="lead">{c.sub}</p>
+    <p class="hero__price">{t('from')} <strong>{formatEUR(priceFrom(80), lang)}</strong> <span class="muted">{c.priceNote}</span></p>
+    <div class="btn-row">
+      <a class="btn" href={pathFor('price', lang)}>{t('cta.calc')}</a>
+      <a class="btn btn--outline" href={pathFor('projects', lang)}>{t('cta.projects')}</a>
+    </div>
+  </div>
+  <div class="hero__img">
+    <Figure name="casa-exterior" lang={lang} eager sizes="(min-width: 1024px) 55vw, 100vw" widths={[480, 768, 1024, 1400]} ratio="auto" />
+  </div>
+</section>
+
+<section class="section stats-sec" aria-label={L('Cifre', 'Цифры', 'Key figures')}>
+  <div class="container">
+    <ul class="stats">{c.stats.map((s) => <li class="reveal"><strong>{s.n}</strong><span>{s.l}</span></li>)}</ul>
+    <p class="muted small">* {L('conform calculelor companiei', 'по расчётам компании', 'according to company calculations')}</p>
+  </div>
+</section>
+
+<section class="section section--soft" aria-labelledby="h-projects">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">{t('nav.projects')}</span><h2 id="h-projects">{c.projectsH}</h2><p class="lead">{c.projectsLead}</p></div>
+    <ProjectCards lang={lang} />
+  </div>
+</section>
+
+<section class="section" aria-labelledby="h-panel">
+  <div class="container split">
+    <Figure name="panou-paie-lut" lang={lang} sizes="(min-width: 1024px) 50vw, 100vw" />
+    <div>
+      <span class="eyebrow">{t('nav.technology')}</span>
+      <h2 id="h-panel">{c.panelH}</h2>
+      <p class="lead">{c.panelLead}</p>
+      <ol class="layers">{c.layers.map((l, i) => <li><span aria-hidden="true">{i + 1}</span><div><h3>{l.t}</h3><p>{l.d}</p></div></li>)}</ol>
+      <a class="btn btn--outline" href={pathFor('technology', lang)}>{t('cta.how')}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--green on-dark" aria-labelledby="h-why">
+  <div class="container">
+    <div class="section-head"><h2 id="h-why">{c.whyH}</h2></div>
+    <div class="grid grid--4">{c.why.map((w) => <div class="reveal"><h3>{w.t}</h3><p>{w.d}</p></div>)}</div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="h-steps">
+  <div class="container">
+    <div class="section-head"><h2 id="h-steps">{c.stepsH}</h2></div>
+    <Steps steps={c.steps} />
+  </div>
+</section>
+
+<section class="section section--soft" aria-labelledby="h-trust">
+  <div class="container split split--center">
+    <div>
+      <span class="eyebrow">GCIP Moldova 2025</span>
+      <h2 id="h-trust">{c.trustH}</h2>
+      <p>{c.trustLead}</p>
+      <a href={pathFor('about', lang)}>{t('nav.about')}</a>
+    </div>
+    <Partners />
+  </div>
+</section>
+
+<section class="section" aria-labelledby="h-facts">
+  <div class="container facts">
+    <h2 id="h-facts">{L('Bordeiaș pe scurt', 'Bordeiaș коротко', 'Bordeiaș in brief')}</h2>
+    <ul>{FACT_LINES[lang].map((f) => <li>{f}</li>)}</ul>
+  </div>
+</section>
+
+<Faq lang={lang} items={c.faq} />
+<LeadSection lang={lang} />
+
+<style>
+  .hero { display: grid; background: var(--beige); }
+  @media (min-width: 1024px) { .hero { grid-template-columns: minmax(0, 46%) 1fr; min-height: min(78vh, 720px); } }
+  .hero__text { padding: clamp(36px, 6vw, 80px) var(--gutter); display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+  @media (min-width: 1024px) { .hero__text { padding-left: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))); } }
+  .hero h1 { margin-bottom: 20px; }
+  .hero__price { font-size: 18px; margin: 8px 0 24px; }
+  .hero__price strong { font-size: 28px; color: var(--green); font-weight: 500; }
+  .hero__price .muted { display: block; font-size: 15px; }
+  .hero__img { min-height: 300px; position: relative; }
+  .hero__img :global(.figure) { position: absolute; inset: 0; aspect-ratio: auto !important; }
+  .stats-sec { padding-block: clamp(40px, 6vw, 72px); }
+  .stats { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 24px; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 1024px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+  .stats li { margin: 0; display: flex; flex-direction: column; gap: 4px; border-left: 2px solid var(--beige); padding-left: 16px; }
+  .stats strong { font-size: clamp(32px, 4vw, 48px); font-weight: 500; color: var(--green); line-height: 1; }
+  .stats span { font-size: 15px; color: var(--muted); }
+  .small { font-size: 13px; }
+  .split { display: grid; gap: clamp(28px, 5vw, 64px); }
+  @media (min-width: 1024px) { .split { grid-template-columns: 1fr 1fr; } .split--center { align-items: center; } }
+  .layers { list-style: none; padding: 0; margin: 24px 0 28px; display: grid; gap: 16px; }
+  .layers li { display: flex; gap: 16px; margin: 0; }
+  .layers span { flex: none; width: 40px; height: 40px; display: grid; place-items: center; background: var(--beige); color: var(--green); font-weight: 500; }
+  .layers h3 { margin: 0 0 4px; font-size: 19px; }
+  .layers p { margin: 0; }
+  .facts { max-width: 880px; }
+  .facts ul { padding-left: 1.1em; }
+</style>

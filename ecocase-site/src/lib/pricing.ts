@@ -18,5 +18,5 @@ export function roundTo(n: number, step: number) {
 
 export function formatEUR(n: number, lang: string) {
   const locale = lang === 'ru' ? 'ru-RU' : lang === 'en' ? 'en-GB' : 'ro-RO';
-  return new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+  return new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR', currencyDisplay: 'narrowSymbol', maximumFractionDigits: 0 }).format(n);
 }

@@ -1,0 +1,57 @@
+---
+import Figure from '@/components/Figure.astro';
+import PackagesTable from '@/components/PackagesTable.astro';
+import ProjectCards from '@/components/ProjectCards.astro';
+import LeadSection from '@/components/LeadSection.astro';
+import { PROJECTS } from '@/content/pages';
+import { FACTS } from '@/content/facts';
+import { pathFor, type Locale } from '@/i18n/routes';
+import { useT } from '@/i18n/ui';
+import projects from '@/data/projects.json';
+interface Props { lang: Locale; project: (typeof projects)[number] }
+const { lang, project: p } = Astro.props;
+const c = PROJECTS[lang].card;
+const t = useT(lang);
+const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
+const months = L(`circa ${FACTS.monthsToWhite} luni`, `около ${FACTS.monthsToWhite} месяцев`, `about ${FACTS.monthsToWhite} months`);
+---
+<section class="section" style="padding-top:32px">
+  <div class="container pp">
+    <div class="pp__gallery" aria-label={c.gallery}>
+      <Figure name={p.gallery[0]} lang={lang} eager sizes="(min-width: 1024px) 60vw, 100vw" widths={[640, 1024, 1400]} />
+      <div class="pp__thumbs">{p.gallery.slice(1).map((g) => <Figure name={g} lang={lang} sizes="(min-width: 1024px) 20vw, 33vw" widths={[320, 480]} ratio="4 / 3" />)}</div>
+    </div>
+    <div class="pp__info">
+      <h1>{L(`Casa ${p.name}`, `Дом ${p.name}`, `${p.name} house`)}</h1>
+      <p class="lead">{p.summary[lang]}</p>
+      <h2 class="pp__h">{c.specs}</h2>
+      <dl class="pp__specs">
+        <div><dt>{c.area}</dt><dd>{p.area} {t('sqm')}</dd></div>
+        <div><dt>{c.floors}</dt><dd>{p.floors}</dd></div>
+        <div><dt>{c.energy}</dt><dd>{p.energyClass}</dd></div>
+        <div><dt>{c.term}</dt><dd>{months}</dd></div>
+      </dl>
+      <div class="btn-row"><a class="btn" href="#lead">{c.cta}</a><a class="btn btn--outline" href={pathFor('price', lang)}>{t('cta.calc')}</a></div>
+    </div>
+  </div>
+</section>
+<section class="section section--soft" aria-labelledby="h-pk">
+  <div class="container"><h2 id="h-pk">{c.packages}</h2><PackagesTable lang={lang} area={p.area} caption={c.packages} /></div>
+</section>
+<section class="section" aria-labelledby="h-plan">
+  <div class="container"><h2 id="h-plan">{c.plan}</h2><p>{c.planNote}</p></div>
+</section>
+<LeadSection lang={lang} source="project" project={p.slug} />
+{projects.length > 1 && (
+  <section class="section" aria-labelledby="h-sim"><div class="container"><h2 id="h-sim">{c.similar}</h2><ProjectCards lang={lang} exclude={p.slug} /></div></section>
+)}
+<style>
+  .pp { display: grid; gap: 32px; }
+  @media (min-width: 1024px) { .pp { grid-template-columns: 1.4fr 1fr; gap: 56px; } }
+  .pp__thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+  .pp__h { font-size: 15px; letter-spacing: .12em; text-transform: uppercase; margin-top: 8px; }
+  .pp__specs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 0 0 24px; border-top: 1px solid var(--line); }
+  .pp__specs div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .pp__specs dt { font-size: 14px; color: var(--muted); }
+  .pp__specs dd { margin: 2px 0 0; font-size: 22px; font-weight: 500; color: var(--green); }
+</style>

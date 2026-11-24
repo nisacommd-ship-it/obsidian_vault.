@@ -1,0 +1,27 @@
+---
+import { pricing, formatEUR, roundTo } from '@/lib/pricing';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale; area?: number; caption?: string }
+const { lang, area, caption } = Astro.props;
+const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
+---
+<div class="table-wrap">
+  <table class="table">
+    {caption && <caption class="sr-only">{caption}</caption>}
+    <thead><tr>
+      <th scope="col">{L('Complectare', 'Комплектация', 'Package')}</th>
+      <th scope="col">{L('Ce include', 'Что входит', 'What is included')}</th>
+      <th scope="col">{area ? L(`Preț pentru ${area} m²`, `Цена за ${area} м²`, `Price for ${area} m²`) : L('Preț pe m²', 'Цена за м²', 'Price per m²')}</th>
+    </tr></thead>
+    <tbody>
+      {pricing.packages.map((p) => (
+        <tr>
+          <th scope="row">{p.label[lang]}</th>
+          <td>{p.desc[lang]}</td>
+          <td>{L('de la', 'от', 'from')} {area ? formatEUR(roundTo(area * p.perSqm, 100), lang) : formatEUR(p.perSqm, lang)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+{pricing.draft && <p class="muted" style="font-size:14px;margin-top:10px">{L('Tarife preliminare, în curs de actualizare. Prețul fix se stabilește în contract.', 'Предварительные ставки, уточняются. Фиксированная цена определяется в договоре.', 'Preliminary rates, being updated. The fixed price is set in the contract.')}</p>}

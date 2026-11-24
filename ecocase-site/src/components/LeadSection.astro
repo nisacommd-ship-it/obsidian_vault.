@@ -1,0 +1,29 @@
+---
+import LeadForm from './LeadForm.astro';
+import { SITE } from '@/config/site';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale; source?: 'form' | 'project' | 'visit'; project?: string }
+const { lang, source = 'form', project } = Astro.props;
+const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
+---
+<section class="section section--beige" aria-label={L('Cerere', 'Заявка', 'Request')}>
+  <div class="container ls">
+    <div class="ls__aside">
+      <span class="eyebrow">{L('Răspundem în aceeași zi', 'Ответим в тот же день', 'Same-day answer')}</span>
+      <p class="ls__big">{L('Preferi să vorbim direct?', 'Удобнее поговорить напрямую?', 'Prefer to talk directly?')}</p>
+      <p><a class="ls__phone" href={`tel:${SITE.phone}`} data-track="phone_click">{SITE.phoneDisplay}</a></p>
+      <div class="btn-row">
+        <a class="btn btn--outline" href={SITE.whatsapp} rel="noopener" data-track="messenger_click" data-channel="whatsapp">WhatsApp</a>
+        <a class="btn btn--outline" href={SITE.viber} data-track="messenger_click" data-channel="viber">Viber</a>
+        <a class="btn btn--outline" href={SITE.telegram} rel="noopener" data-track="messenger_click" data-channel="telegram">Telegram</a>
+      </div>
+    </div>
+    <LeadForm lang={lang} source={source} project={project} />
+  </div>
+</section>
+<style>
+  .ls { display: grid; gap: 32px; align-items: start; }
+  @media (min-width: 1024px) { .ls { grid-template-columns: 1fr 1.6fr; gap: 56px; } }
+  .ls__big { font-size: clamp(26px, 3vw, 36px); font-weight: 500; color: var(--green); line-height: 1.15; }
+  .ls__phone { font-size: 28px; font-weight: 500; color: var(--green); text-decoration: none; }
+</style>

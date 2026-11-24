@@ -1,0 +1,23 @@
+---
+import { Picture } from 'astro:assets';
+import { IMAGES, ALT, IS_VISUALISATION } from '@/lib/images';
+import { useT } from '@/i18n/ui';
+import type { Locale } from '@/i18n/routes';
+interface Props {
+  name: string; lang: Locale; sizes?: string; widths?: number[]; eager?: boolean;
+  class?: string; ratio?: string; caption?: string;
+}
+const { name, lang, sizes = '(min-width: 1024px) 50vw, 100vw', widths = [480, 768, 1024, 1536], eager = false, ratio = '3 / 2', caption } = Astro.props;
+const t = useT(lang);
+const img = IMAGES[name];
+---
+<figure class:list={['figure', Astro.props.class]} style={`aspect-ratio:${ratio}`}>
+  <Picture src={img} alt={ALT[name]?.[lang] ?? ''} formats={['avif', 'webp']} widths={widths} sizes={sizes}
+    loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : 'auto'} decoding={eager ? 'sync' : 'async'} />
+  {IS_VISUALISATION.has(name) && <span class="viz-tag">{t('viz')}</span>}
+  {caption && <figcaption class="sr-only">{caption}</figcaption>}
+</figure>
+<style>
+  figure :global(picture) { display: block; width: 100%; height: 100%; }
+  figure :global(img) { width: 100%; height: 100%; object-fit: cover; }
+</style>

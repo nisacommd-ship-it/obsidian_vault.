@@ -1,0 +1,20 @@
+---
+import Base from '@/layouts/Base.astro';
+import { NOT_FOUND } from '@/content/pages';
+import { LOCALES } from '@/i18n/routes';
+const c = NOT_FOUND.ro;
+const alternates = Object.fromEntries(LOCALES.map((l) => [l, `/${l}/`])) as Record<'ro' | 'ru' | 'en', string>;
+---
+<Base lang="ro" title={c.title} description={c.text} alternates={alternates} noindex>
+  <section class="section">
+    <div class="container prose">
+      {LOCALES.map((l) => (
+        <div lang={l} style="margin-bottom:32px">
+          {l === 'ro' ? <h1>{NOT_FOUND[l].h1}</h1> : <h2>{NOT_FOUND[l].h1}</h2>}
+          <p>{NOT_FOUND[l].text}</p>
+          <a class="btn btn--outline" href={`/${l}/`}>{NOT_FOUND[l].home}</a>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
