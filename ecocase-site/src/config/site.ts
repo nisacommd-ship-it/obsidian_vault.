@@ -43,7 +43,7 @@ export const SITE = {
 // Public analytics / anti-spam keys are injected at build time from
 // Cloudflare Pages environment variables. They are not secrets.
 export const PUBLIC_ENV = {
-  gtmId: import.meta.env.PUBLIC_GTM_ID ?? '',
+  gtmId: import.meta.env.PUBLIC_GTM_ID || 'GTM-5BTP9BSM',
   turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '',
 };
 
