@@ -1,0 +1,32 @@
+---
+import { getPosts, postPath } from '@/lib/blog';
+import { useT } from '@/i18n/ui';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale; hub?: string; exclude?: string; limit?: number; title?: string }
+const { lang, hub, exclude, limit = 6 } = Astro.props;
+const t = useT(lang);
+const posts = (await getPosts(lang)).filter((p) => (!hub || p.data.hub === hub) && p.data.slug !== exclude).slice(0, limit);
+---
+{posts.length > 0 && (
+  <section class="section section--soft" aria-labelledby={`bl-${hub ?? 'all'}`}>
+    <div class="container">
+      <h2 id={`bl-${hub ?? 'all'}`}>{Astro.props.title ?? t('blog.related')}</h2>
+      <ul class="bl">
+        {posts.map((p) => (
+          <li><a href={postPath(p)}><span class="bl__cat">{p.data.category}</span><strong>{p.data.h1 ?? p.data.title}</strong><span class="bl__d">{p.data.description}</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+<style>
+  .bl { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+  @media (min-width: 768px) { .bl { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .bl { grid-template-columns: repeat(3, 1fr); } }
+  .bl li { margin: 0; }
+  .bl a { display: flex; flex-direction: column; gap: 8px; height: 100%; padding: 20px 22px; background: var(--white); border: 1px solid var(--line); color: var(--graphite); text-decoration: none; }
+  .bl a:hover strong { color: var(--green); text-decoration: underline; }
+  .bl strong { font-size: 19px; font-weight: 500; line-height: 1.3; color: var(--green); }
+  .bl__cat { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .bl__d { font-size: 15px; color: var(--muted); }
+</style>

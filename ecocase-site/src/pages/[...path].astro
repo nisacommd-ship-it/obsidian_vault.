@@ -10,21 +10,35 @@ import About from '@/views/About.astro';
 import Contact from '@/views/Contact.astro';
 import Legal from '@/views/Legal.astro';
 import Thanks from '@/views/Thanks.astro';
+import BlogIndex from '@/views/BlogIndex.astro';
+import BlogPost from '@/views/BlogPost.astro';
+import { BLOG_META } from '@/lib/pages';
+import { IMAGES as IMG } from '@/lib/images';
 import { buildRoutes, type PageEntry } from '@/lib/pages';
 import { faqPage, product } from '@/lib/schema';
 import { SITE } from '@/config/site';
 import { priceFrom, pricing, roundTo } from '@/lib/pricing';
 import { IMAGES } from '@/lib/images';
 
-export function getStaticPaths() {
-  return buildRoutes().map((e) => ({ params: { path: e.path.replace(/^\/|\/$/g, '') }, props: { entry: e } }));
+export async function getStaticPaths() {
+  return (await buildRoutes()).map((e) => ({ params: { path: e.path.replace(/^\/|\/$/g, '') }, props: { entry: e } }));
 }
 
 const { entry } = Astro.props as { entry: PageEntry };
-const { lang, key, project } = entry;
+const { lang, key, project, post } = entry;
 const url = new URL(entry.path, SITE.url).href;
 const schema: object[] = [];
 if (entry.faq?.length) schema.push(faqPage(entry.faq, url));
+if (post) {
+  schema.push({
+    '@type': 'BlogPosting', '@id': `${url}#article`, headline: post.data.h1 ?? post.data.title, description: post.data.description,
+    inLanguage: lang, datePublished: post.data.date, dateModified: post.data.updated ?? post.data.date,
+    image: new URL(IMG[post.data.image].src, SITE.url).href, mainEntityOfPage: url,
+    author: { '@type': 'Person', name: post.data.author, jobTitle: SITE.founder.role[lang], worksFor: { '@id': `${SITE.url}/#organization` } },
+    publisher: { '@id': `${SITE.url}/#organization` }, articleSection: post.data.category,
+    ...(post.data.sources.length && { citation: post.data.sources.map((s) => s.url) }),
+  });
+}
 if (project) {
   const hi = roundTo(project.area * Math.max(...pricing.packages.map((p) => p.perSqm)), 100);
   schema.push(product({
@@ -34,7 +48,8 @@ if (project) {
 }
 ---
 <Base lang={lang} title={entry.title} description={entry.description} alternates={entry.alternates}
-  crumbs={entry.crumbs} schema={schema} noindex={entry.noindex} pageType={entry.pageType}>
+  crumbs={entry.crumbs} schema={schema} noindex={entry.noindex} pageType={entry.pageType} hreflang={entry.hreflang}
+  dateModified={post ? (post.data.updated ?? post.data.date) : undefined} ogType={post ? 'article' : undefined}>
   {key === 'home' && <Home lang={lang} />}
   {key === 'turnkey' && <Turnkey lang={lang} />}
   {key === 'projects' && !project && <Projects lang={lang} />}
@@ -45,4 +60,6 @@ if (project) {
   {key === 'contact' && <Contact lang={lang} />}
   {(key === 'privacy' || key === 'cookies') && entry.legal && <Legal lang={lang} doc={entry.legal} />}
   {key === 'thanks' && <Thanks lang={lang} />}
+  {key === 'blog' && !post && <BlogIndex lang={lang} h1={BLOG_META[lang].h1} lead={BLOG_META[lang].lead} />}
+  {key === 'blog' && post && <BlogPost post={post} />}
 </Base>

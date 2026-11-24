@@ -22,12 +22,16 @@ interface Props {
   noindex?: boolean;
   ogImage?: string;
   dateModified?: string;
+  hreflang?: Partial<Record<Locale, string>>;
+  ogType?: string;
 }
 
 const {
   lang, title, description, alternates, crumbs = [], schema = [], pageType,
-  noindex = false, ogImage, dateModified = '2026-11-24',
+  noindex = false, ogImage, dateModified = '2026-11-24', ogType = 'website',
 } = Astro.props;
+const hl: Partial<Record<Locale, string>> = Astro.props.hreflang ?? alternates;
+const xDefault = hl[DEFAULT_LOCALE] ?? hl[lang];
 const t = useT(lang);
 const path = alternates[lang];
 const canonical = new URL(path, SITE.url).href;
@@ -57,10 +61,10 @@ const gtmId = PUBLIC_ENV.gtmId;
   {noindex
     ? <meta name="robots" content="noindex, follow" />
     : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />}
-  {!noindex && LOCALES.map((l) => (
-    <link rel="alternate" hreflang={HREFLANG[l]} href={new URL(alternates[l], SITE.url).href} />
+  {!noindex && LOCALES.filter((l) => hl[l]).map((l) => (
+    <link rel="alternate" hreflang={HREFLANG[l]} href={new URL(hl[l]!, SITE.url).href} />
   ))}
-  {!noindex && <link rel="alternate" hreflang="x-default" href={new URL(alternates[DEFAULT_LOCALE], SITE.url).href} />}
+  {!noindex && xDefault && <link rel="alternate" hreflang="x-default" href={new URL(xDefault, SITE.url).href} />}
 
   <link rel="preload" href="/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
   {lang === 'ru'
@@ -74,7 +78,7 @@ const gtmId = PUBLIC_ENV.gtmId;
   <meta name="theme-color" content="#22382B" />
   <meta name="format-detection" content="telephone=no" />
 
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content={ogType} />
   <meta property="og:site_name" content={SITE.brand} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
@@ -92,6 +96,7 @@ const gtmId = PUBLIC_ENV.gtmId;
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <script is:inline define:vars={{ gtmId }}>
+    if (location.hostname === 'www.ecocase.md') location.replace('https://ecocase.md' + location.pathname + location.search + location.hash);
     document.documentElement.classList.add('js');
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }

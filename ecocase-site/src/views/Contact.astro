@@ -1,5 +1,6 @@
 ---
 import LeadForm from '@/components/LeadForm.astro';
+import Faq from '@/components/Faq.astro';
 import { CONTACT } from '@/content/pages';
 import { SITE } from '@/config/site';
 import type { Locale } from '@/i18n/routes';
@@ -34,6 +35,13 @@ const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
     <LeadForm lang={lang} source="visit" />
   </div>
 </section>
+<section class="section section--soft" aria-labelledby="h-visit">
+  <div class="container">
+    <h2 id="h-visit">{c.visitH}</h2>
+    <div class="grid grid--3">{c.visit.map((v) => <div><h3>{v.t}</h3><p>{v.d}</p></div>)}</div>
+  </div>
+</section>
+<Faq lang={lang} items={c.faq} />
 <style>
   .ct { display: grid; gap: 40px; align-items: start; }
   @media (min-width: 1024px) { .ct { grid-template-columns: 1fr 1.2fr; gap: 64px; } }

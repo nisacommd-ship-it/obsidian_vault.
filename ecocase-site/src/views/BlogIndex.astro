@@ -1,0 +1,12 @@
+---
+import BlogLinks from '@/components/BlogLinks.astro';
+import LeadSection from '@/components/LeadSection.astro';
+import type { Locale } from '@/i18n/routes';
+interface Props { lang: Locale; h1: string; lead: string }
+const { lang, h1, lead } = Astro.props;
+---
+<section class="section" style="padding-top:32px;padding-bottom:0">
+  <div class="container section-head"><h1>{h1}</h1><p class="lead">{lead}</p></div>
+</section>
+<BlogLinks lang={lang} limit={100} title={lang === 'ro' ? 'Toate articolele' : lang === 'ru' ? 'Все статьи' : 'All articles'} />
+<LeadSection lang={lang} />

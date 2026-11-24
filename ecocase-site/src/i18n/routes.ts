@@ -19,6 +19,7 @@ export const ROUTES = {
   privacy: { ro: 'politica-de-confidentialitate', ru: 'politika-konfidencialnosti', en: 'privacy-policy' },
   cookies: { ro: 'politica-cookie', ru: 'politika-cookie', en: 'cookie-policy' },
   thanks: { ro: 'multumim', ru: 'spasibo', en: 'thank-you' },
+  blog: { ro: 'blog', ru: 'blog', en: 'blog' },
 } as const satisfies Record<string, Record<Locale, string>>;
 
 export type RouteKey = keyof typeof ROUTES;

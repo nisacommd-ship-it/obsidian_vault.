@@ -336,7 +336,7 @@ export const ABOUT: Record<Locale, Meta & { lead: string; storyH: string; story:
 };
 
 /* ------------------------------------------------------------------ */
-export const CONTACT: Record<Locale, Meta & { lead: string; hoursLabel: string; hours: string; addressPending: string; vcard: string; legal: string }> = {
+export const CONTACT: Record<Locale, Meta & { lead: string; hoursLabel: string; hours: string; addressPending: string; vcard: string; legal: string; visitH: string; visit: { t: string; d: string }[]; faq: QA[] }> = {
   ro: {
     title: 'Contacte și vizită la casa-pilot | Bordeiaș',
     description: 'Sună la +373 79 447 732, scrie pe WhatsApp, Viber sau Telegram ori programează o vizită la casa-pilot Bordeiaș din paie și lut.',
@@ -347,6 +347,17 @@ export const CONTACT: Record<Locale, Meta & { lead: string; hoursLabel: string; 
     addressPending: 'Adresa exactă a casei-pilot o trimitem după confirmarea vizitei.',
     vcard: 'Salvează contactul în telefon',
     legal: 'Date juridice',
+    visitH: 'Ce vezi la vizita în casa-pilot',
+    visit: [
+      { t: 'Microclimatul', d: 'Simți cum se păstrează căldura și cum lutul reglează umiditatea, fără aer uscat și fără miros de materiale sintetice.' },
+      { t: 'Panoul în secțiune', d: 'Vezi un panou tăiat: cadrul din lemn, paiele presate la circa 100 kg/m³ și stratul de lut.' },
+      { t: 'Discuția despre terenul tău', d: 'Managerul răspunde la întrebări despre proiect, fundație, termene și preț. Poți veni cu planul terenului.' },
+    ],
+    faq: [
+      { q: 'Cât durează o vizită la casa-pilot?', a: 'De obicei 40 până la 60 de minute: turul casei, panoul în secțiune și discuția despre proiectul tău.' },
+      { q: 'Vizita este gratuită?', a: 'Da, vizita este gratuită și nu te obligă la nimic. Programarea este necesară ca să te putem primi personal.' },
+      { q: 'Pot primi oferta fără vizită?', a: 'Da. Scrie-ne suprafața dorită și raionul terenului, iar managerul îți trimite un calcul orientativ pe WhatsApp, Viber sau e-mail.' },
+    ],
   },
   ru: {
     title: 'Контакты и визит в пилотный дом | Bordeiaș',
@@ -358,6 +369,17 @@ export const CONTACT: Record<Locale, Meta & { lead: string; hoursLabel: string; 
     addressPending: 'Точный адрес пилотного дома пришлём после подтверждения визита.',
     vcard: 'Сохранить контакт в телефон',
     legal: 'Реквизиты',
+    visitH: 'Что вы увидите в пилотном доме',
+    visit: [
+      { t: 'Микроклимат', d: 'Почувствуете, как держится тепло и как глина регулирует влажность: без сухого воздуха и запаха синтетики.' },
+      { t: 'Панель в разрезе', d: 'Увидите панель в разрезе: деревянная рама, солома, спрессованная примерно до 100 кг/м³, и слой глины.' },
+      { t: 'Разговор о вашем участке', d: 'Менеджер ответит на вопросы о проекте, фундаменте, сроках и цене. Можно приехать с планом участка.' },
+    ],
+    faq: [
+      { q: 'Сколько длится визит в пилотный дом?', a: 'Обычно 40-60 минут: осмотр дома, панель в разрезе и разговор о вашем проекте.' },
+      { q: 'Визит бесплатный?', a: 'Да, визит бесплатный и ни к чему не обязывает. Запись нужна, чтобы мы встретили вас лично.' },
+      { q: 'Можно получить предложение без визита?', a: 'Да. Напишите желаемую площадь и район участка, и менеджер пришлёт ориентировочный расчёт в WhatsApp, Viber или на e-mail.' },
+    ],
   },
   en: {
     title: 'Contact and pilot house visits | Bordeiaș',
@@ -369,6 +391,17 @@ export const CONTACT: Record<Locale, Meta & { lead: string; hoursLabel: string; 
     addressPending: 'We send the exact pilot house address once your visit is confirmed.',
     vcard: 'Save contact to your phone',
     legal: 'Company details',
+    visitH: 'What you will see at the pilot house',
+    visit: [
+      { t: 'The indoor climate', d: 'Feel how the house keeps its warmth and how clay balances humidity, with no dry air and no smell of synthetic materials.' },
+      { t: 'A panel cross-section', d: 'See a cut-open panel: the timber frame, straw pressed to about 100 kg/m³ and the clay layer.' },
+      { t: 'A talk about your plot', d: 'Our manager answers questions about the design, foundation, timeline and price. Bring your plot plan if you have one.' },
+    ],
+    faq: [
+      { q: 'How long does a pilot house visit take?', a: 'Usually 40 to 60 minutes: a tour of the house, the panel cross-section and a talk about your project.' },
+      { q: 'Is the visit free?', a: 'Yes, the visit is free and without obligation. Booking is needed so we can meet you in person.' },
+      { q: 'Can I get a quote without visiting?', a: 'Yes. Send us the floor area you want and your plot district, and our manager will send an indicative estimate via WhatsApp, Viber or email.' },
+    ],
   },
 };
 

@@ -9,7 +9,7 @@ const C = `${SITE.legalName}, IDNO ${SITE.idno}`;
 
 export const PRIVACY: Record<Locale, Doc> = {
   ro: {
-    title: 'Politica de confidențialitate | Bordeiaș', description: 'Cum prelucrează Bordeiaș datele personale trimise prin site.', h1: 'Politica de confidențialitate', crumb: 'Confidențialitate', updated: '2026-11-24',
+    title: 'Politica de confidențialitate a site-ului | Bordeiaș', description: 'Cum prelucrează Bordeiaș datele personale trimise prin formularele site-ului ecocase.md: ce colectăm, de ce, cât păstrăm și drepturile tale.', h1: 'Politica de confidențialitate', crumb: 'Confidențialitate', updated: '2026-11-24',
     sections: [
       { h: 'Operatorul de date', p: [`Operatorul datelor este ${C}, care dezvoltă marca Bordeiaș. Contact: ${SITE.email}, ${SITE.phoneDisplay}.`] },
       { h: 'Ce date colectăm', p: ['Prin formulare: nume, telefon, e-mail (opțional), raionul terenului, suprafața dorită, existența terenului, comentariul, metoda de contact preferată, data vizitei și parametrii calculatorului.', 'Automat: limba și pagina de pe care a fost trimisă cererea, sursa vizitei (etichete UTM), data și ora, adresa IP în formă criptată pentru protecția împotriva spamului.'] },
@@ -21,7 +21,7 @@ export const PRIVACY: Record<Locale, Doc> = {
     ],
   },
   ru: {
-    title: 'Политика конфиденциальности | Bordeiaș', description: 'Как Bordeiaș обрабатывает персональные данные, отправленные через сайт.', h1: 'Политика конфиденциальности', crumb: 'Конфиденциальность', updated: '2026-11-24',
+    title: 'Политика конфиденциальности сайта | Bordeiaș', description: 'Как Bordeiaș обрабатывает персональные данные из форм сайта ecocase.md: что собираем, зачем, сколько храним и какие у вас права.', h1: 'Политика конфиденциальности', crumb: 'Конфиденциальность', updated: '2026-11-24',
     sections: [
       { h: 'Оператор данных', p: [`Оператор данных: ${C}, развивающая бренд Bordeiaș. Контакты: ${SITE.email}, ${SITE.phoneDisplay}.`] },
       { h: 'Какие данные мы собираем', p: ['Через формы: имя, телефон, e-mail (по желанию), район участка, желаемая площадь, наличие участка, комментарий, удобный способ связи, дата визита и параметры калькулятора.', 'Автоматически: язык и страница, с которой отправлена заявка, источник визита (UTM-метки), дата и время, IP-адрес в зашифрованном виде для защиты от спама.'] },
@@ -33,7 +33,7 @@ export const PRIVACY: Record<Locale, Doc> = {
     ],
   },
   en: {
-    title: 'Privacy policy | Bordeiaș', description: 'How Bordeiaș processes personal data submitted through the website.', h1: 'Privacy policy', crumb: 'Privacy', updated: '2026-11-24',
+    title: 'Website privacy policy | Bordeiaș straw houses', description: 'How Bordeiaș processes personal data sent through the ecocase.md forms: what we collect, why, how long we keep it and your rights.', h1: 'Privacy policy', crumb: 'Privacy', updated: '2026-11-24',
     sections: [
       { h: 'Data controller', p: [`The data controller is ${C}, which develops the Bordeiaș brand. Contact: ${SITE.email}, ${SITE.phoneDisplay}.`] },
       { h: 'What we collect', p: ['Through forms: name, phone, email (optional), plot district, desired floor area, whether you have a plot, comment, preferred contact method, visit date and estimator settings.', 'Automatically: the language and page the request came from, visit source (UTM tags), date and time, and a hashed IP address for spam protection.'] },
@@ -48,7 +48,7 @@ export const PRIVACY: Record<Locale, Doc> = {
 
 export const COOKIES: Record<Locale, Doc> = {
   ro: {
-    title: 'Politica cookie | Bordeiaș', description: 'Ce cookie-uri folosește site-ul Bordeiaș și cum le controlezi.', h1: 'Politica cookie', crumb: 'Cookie', updated: '2026-11-24',
+    title: 'Politica cookie a site-ului ecocase.md | Bordeiaș', description: 'Ce cookie-uri folosește site-ul Bordeiaș: necesare, de analiză și de marketing, și cum îți schimbi oricând alegerea.', h1: 'Politica cookie', crumb: 'Cookie', updated: '2026-11-24',
     sections: [
       { h: 'Cookie-uri necesare', p: ['Păstrează alegerea ta privind cookie-urile și protecția formularelor împotriva spamului (Cloudflare Turnstile). Nu pot fi dezactivate.'] },
       { h: 'Cookie-uri de analiză', p: ['Google Analytics 4 prin Google Tag Manager, doar cu acordul tău. Ne arată ce pagini sunt utile și de unde vin cererile.'] },
@@ -57,7 +57,7 @@ export const COOKIES: Record<Locale, Doc> = {
     ],
   },
   ru: {
-    title: 'Политика cookie | Bordeiaș', description: 'Какие cookie использует сайт Bordeiaș и как ими управлять.', h1: 'Политика cookie', crumb: 'Cookie', updated: '2026-11-24',
+    title: 'Политика cookie сайта ecocase.md | Bordeiaș', description: 'Какие cookie использует сайт Bordeiaș: необходимые, аналитические и маркетинговые, и как в любой момент изменить выбор.', h1: 'Политика cookie', crumb: 'Cookie', updated: '2026-11-24',
     sections: [
       { h: 'Необходимые cookie', p: ['Хранят ваш выбор по cookie и защиту форм от спама (Cloudflare Turnstile). Отключить нельзя.'] },
       { h: 'Аналитические cookie', p: ['Google Analytics 4 через Google Tag Manager, только с вашего согласия. Показывают, какие страницы полезны и откуда приходят заявки.'] },
@@ -66,7 +66,7 @@ export const COOKIES: Record<Locale, Doc> = {
     ],
   },
   en: {
-    title: 'Cookie policy | Bordeiaș', description: 'Which cookies the Bordeiaș website uses and how to control them.', h1: 'Cookie policy', crumb: 'Cookies', updated: '2026-11-24',
+    title: 'Cookie policy of ecocase.md | Bordeiaș straw houses', description: 'Which cookies the Bordeiaș website uses: necessary, analytics and marketing, and how to change your choice at any time.', h1: 'Cookie policy', crumb: 'Cookies', updated: '2026-11-24',
     sections: [
       { h: 'Necessary cookies', p: ['Store your cookie choice and protect forms from spam (Cloudflare Turnstile). They cannot be switched off.'] },
       { h: 'Analytics cookies', p: ['Google Analytics 4 via Google Tag Manager, only with your consent. They show which pages help and where requests come from.'] },

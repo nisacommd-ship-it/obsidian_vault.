@@ -4,6 +4,7 @@ import ProjectCards from '@/components/ProjectCards.astro';
 import PackagesTable from '@/components/PackagesTable.astro';
 import Steps from '@/components/Steps.astro';
 import Faq from '@/components/Faq.astro';
+import BlogLinks from '@/components/BlogLinks.astro';
 import LeadSection from '@/components/LeadSection.astro';
 import { TURNKEY } from '@/content/pages';
 import { HOME } from '@/content/home';
@@ -43,6 +44,7 @@ const t = useT(lang);
   <div class="container"><h2 id="h-st">{HOME[lang].stepsH}</h2><Steps steps={HOME[lang].steps} /></div>
 </section>
 <Faq lang={lang} items={c.faq} />
+<BlogLinks lang={lang} hub='turnkey' />
 <LeadSection lang={lang} />
 <style>
   .page-hero { padding-top: 32px; }

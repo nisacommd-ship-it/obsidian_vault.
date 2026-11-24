@@ -2,6 +2,7 @@
 import Calculator from '@/components/Calculator.astro';
 import PackagesTable from '@/components/PackagesTable.astro';
 import Faq from '@/components/Faq.astro';
+import BlogLinks from '@/components/BlogLinks.astro';
 import { PRICE } from '@/content/pages';
 import type { Locale } from '@/i18n/routes';
 interface Props { lang: Locale }
@@ -28,3 +29,4 @@ const c = PRICE[lang];
   </div>
 </section>
 <Faq lang={lang} items={c.faq} />
+<BlogLinks lang={lang} hub='price' />

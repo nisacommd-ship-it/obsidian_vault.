@@ -12,7 +12,7 @@ import { useT } from '@/i18n/ui';
 interface Props { lang: Locale }
 const { lang } = Astro.props;
 const t = useT(lang);
-const pages = ['turnkey', 'projects', 'price', 'technology', 'about', 'contact'] as const;
+const pages = ['turnkey', 'projects', 'price', 'technology', 'about', 'contact', 'blog'] as const;
 const L = (ro: string, ru: string, en: string) => ({ ro, ru, en })[lang];
 ---
 <footer class="ftr on-dark">

@@ -111,7 +111,7 @@ export const HOME: Record<Locale, {
   },
   en: {
     title: 'Straw and Clay Turnkey Houses in Moldova | Bordeiaș',
-    description: 'Modular houses built from prefabricated pressed straw and clay panels, energy class A+, ready for finishing in about 4 months. Prices, estimator and pilot house visits.',
+    description: 'Modular houses from prefabricated pressed straw and clay panels, energy class A+, ready for finishing in about 4 months. Prices, estimator, pilot house visits.',
     eyebrow: 'Ecological modular houses',
     h1: 'Straw and clay houses,',
     h1Light: 'turnkey in Moldova',

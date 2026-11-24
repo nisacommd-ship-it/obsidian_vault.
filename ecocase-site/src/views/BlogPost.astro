@@ -1,0 +1,75 @@
+---
+import { render } from 'astro:content';
+import Figure from '@/components/Figure.astro';
+import Faq from '@/components/Faq.astro';
+import BlogLinks from '@/components/BlogLinks.astro';
+import LeadSection from '@/components/LeadSection.astro';
+import { readingMinutes, type Post } from '@/lib/blog';
+import { pathFor } from '@/i18n/routes';
+import { useT } from '@/i18n/ui';
+interface Props { post: Post }
+const { post } = Astro.props;
+const d = post.data;
+const lang = d.lang;
+const t = useT(lang);
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2);
+const fmt = (s: string) => new Date(s + 'T12:00:00Z').toLocaleDateString(lang === 'ru' ? 'ru-RU' : lang === 'en' ? 'en-GB' : 'ro-RO', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<article class="post">
+  <header class="container post__head">
+    <span class="eyebrow">{d.category}</span>
+    <h1>{d.h1 ?? d.title}</h1>
+    <p class="post__meta">
+      {t('blog.by')}: <a href={pathFor('about', lang)} rel="author">{d.author}</a> ·
+      {t('blog.published')}: <time datetime={d.date}>{fmt(d.date)}</time>
+      {d.updated && <> · {t('updated')}: <time datetime={d.updated}>{fmt(d.updated)}</time></>}
+      · {readingMinutes(post.body ?? '')} {t('blog.min')}
+    </p>
+  </header>
+  <div class="container post__grid">
+    <div class="post__body prose">
+      <Figure name={d.image} lang={lang} eager sizes="(min-width: 1024px) 720px, 100vw" widths={[480, 720, 1080]} />
+      <Content />
+      {d.sources.length > 0 && (
+        <aside class="post__src"><h2>{t('blog.sources')}</h2><ul>{d.sources.map((s) => <li><a href={s.url} rel="noopener nofollow">{s.name}</a></li>)}</ul></aside>
+      )}
+      <aside class="post__cta on-dark">
+        <h2>{t('blog.cta.h')}</h2><p>{t('blog.cta.p')}</p>
+        <a class="btn btn--beige" href={pathFor('price', lang)}>{t('cta.calc')}</a>
+      </aside>
+    </div>
+    {toc.length > 2 && (
+      <nav class="post__toc" aria-label={t('blog.toc')}>
+        <p class="eyebrow">{t('blog.toc')}</p>
+        <ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+      </nav>
+    )}
+  </div>
+</article>
+{d.faq.length > 0 && <Faq lang={lang} items={d.faq} />}
+<BlogLinks lang={lang} exclude={d.slug} limit={3} />
+<LeadSection lang={lang} />
+<style>
+  .post__head { padding-top: 24px; max-width: 900px; margin-left: max(0px, calc((100vw - var(--container)) / 2)); }
+  .post__head h1 { font-size: clamp(32px, 4.4vw, 48px); }
+  .post__meta { color: var(--muted); font-size: 15px; }
+  .post__grid { display: grid; gap: 40px; padding-bottom: var(--section); }
+  @media (min-width: 1100px) { .post__grid { grid-template-columns: minmax(0, 720px) 260px; justify-content: space-between; } }
+  .post__body { max-width: 720px; }
+  .post__body :global(.figure) { margin-bottom: 28px; }
+  .post__body :global(h2) { scroll-margin-top: 96px; }
+  .post__body :global(table) { font-size: 16px; margin: 20px 0; border: 1px solid var(--line); display: block; overflow-x: auto; }
+  .post__body :global(th), .post__body :global(td) { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  .post__body :global(th) { background: var(--green); color: var(--white); font-weight: 500; }
+  .post__body :global(blockquote) { margin: 24px 0; padding: 16px 20px; background: var(--beige-soft); border-left: 3px solid var(--green); }
+  .post__toc { position: sticky; top: 96px; align-self: start; font-size: 15px; }
+  .post__toc ol { padding-left: 1.1em; margin: 0; }
+  .post__toc a { color: var(--graphite); text-decoration: none; }
+  .post__toc a:hover { color: var(--green); text-decoration: underline; }
+  @media (max-width: 1099px) { .post__toc { display: none; } }
+  .post__src { margin-top: 32px; font-size: 15px; }
+  .post__src h2 { font-size: 20px; }
+  .post__cta { margin-top: 40px; padding: 28px; background: var(--green); color: var(--white); }
+  .post__cta h2 { color: var(--white); font-size: 26px; margin-top: 0; }
+</style>

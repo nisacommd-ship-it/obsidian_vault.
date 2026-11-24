@@ -5,8 +5,8 @@ import { buildRoutes } from '@/lib/pages';
 import { pricing } from '@/lib/pricing';
 
 // llms.txt: a plain-text map of the site for LLM crawlers (GEO).
-export const GET: APIRoute = () => {
-  const pages = buildRoutes().filter((e) => !e.noindex && !['privacy', 'cookies'].includes(e.key));
+export const GET: APIRoute = async () => {
+  const pages = (await buildRoutes()).filter((e) => !e.noindex && !['privacy', 'cookies'].includes(e.key));
   const section = (lang: 'ro' | 'ru' | 'en', title: string) =>
     [`## ${title}`, ...pages.filter((p) => p.lang === lang).map((p) => `- [${p.title}](${SITE.url}${p.path}): ${p.description}`)].join('\n');
   const body = [
