@@ -1,0 +1,140 @@
+---
+import '@/styles/global.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import FloatingContacts from '@/components/FloatingContacts.astro';
+import CookieBanner from '@/components/CookieBanner.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import { SITE, PUBLIC_ENV } from '@/config/site';
+import { HREFLANG, OG_LOCALE, LOCALES, DEFAULT_LOCALE, type Locale } from '@/i18n/routes';
+import { useT } from '@/i18n/ui';
+import { graph, organization, website, webPage, breadcrumbs as bcSchema } from '@/lib/schema';
+
+interface Props {
+  lang: Locale;
+  title: string;
+  description: string;
+  /** Map of locale to absolute path of this same page in that locale. */
+  alternates: Record<Locale, string>;
+  crumbs?: { name: string; path: string }[];
+  schema?: object[];
+  pageType?: string;
+  noindex?: boolean;
+  ogImage?: string;
+  dateModified?: string;
+}
+
+const {
+  lang, title, description, alternates, crumbs = [], schema = [], pageType,
+  noindex = false, ogImage, dateModified = '2026-11-24',
+} = Astro.props;
+const t = useT(lang);
+const path = alternates[lang];
+const canonical = new URL(path, SITE.url).href;
+const og = ogImage ?? `${SITE.url}/og/og-${lang}.jpg`;
+
+const crumbItems = crumbs.length
+  ? [{ name: t('breadcrumb.home'), path: `/${lang}/` }, ...crumbs]
+  : [];
+
+const jsonLd = graph(
+  organization(lang),
+  website(lang),
+  webPage({ url: canonical, title, description, lang, type: pageType, dateModified, image: og }),
+  ...(crumbItems.length ? [bcSchema(crumbItems.map((c) => ({ name: c.name, url: new URL(c.path, SITE.url).href })))] : []),
+  ...schema,
+);
+const gtmId = PUBLIC_ENV.gtmId;
+---
+<!doctype html>
+<html lang={lang} dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex
+    ? <meta name="robots" content="noindex, follow" />
+    : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />}
+  {!noindex && LOCALES.map((l) => (
+    <link rel="alternate" hreflang={HREFLANG[l]} href={new URL(alternates[l], SITE.url).href} />
+  ))}
+  {!noindex && <link rel="alternate" hreflang="x-default" href={new URL(alternates[DEFAULT_LOCALE], SITE.url).href} />}
+
+  <link rel="preload" href="/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+  {lang === 'ru'
+    ? <link rel="preload" href="/fonts/jost-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    : <link rel="preload" href="/fonts/jost-latin-ext-wght-normal.woff2" as="font" type="font/woff2" crossorigin />}
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#22382B" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={SITE.brand} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={og} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content={OG_LOCALE[lang]} />
+  {LOCALES.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={OG_LOCALE[l]} />)}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={og} />
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <script is:inline define:vars={{ gtmId }}>
+    document.documentElement.classList.add('js');
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('consent', 'default', {
+      ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
+      analytics_storage: 'denied', functionality_storage: 'granted', security_storage: 'granted',
+      wait_for_update: 500
+    });
+    window.__loadGTM = function () {
+      if (!gtmId || window.__gtmLoaded) return;
+      window.__gtmLoaded = true;
+      dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+      var s = document.createElement('script');
+      s.async = true; s.src = 'https://www.googletagmanager.com/gtm.js?id=' + gtmId;
+      document.head.appendChild(s);
+    };
+    try {
+      var c = JSON.parse(localStorage.getItem('consent') || 'null');
+      if (c && c.analytics) {
+        gtag('consent', 'update', {
+          analytics_storage: 'granted',
+          ad_storage: c.marketing ? 'granted' : 'denied',
+          ad_user_data: c.marketing ? 'granted' : 'denied',
+          ad_personalization: c.marketing ? 'granted' : 'denied'
+        });
+        window.__loadGTM();
+      }
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">{t('skip')}</a>
+  <Header lang={lang} alternates={alternates} />
+  <main id="main">
+    {crumbItems.length > 0 && <Breadcrumbs lang={lang} items={crumbItems} />}
+    <slot />
+  </main>
+  <Footer lang={lang} />
+  <FloatingContacts lang={lang} />
+  <CookieBanner lang={lang} />
+  <script>
+    import '@/scripts/site';
+  </script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+---
+import logoUrl from '@/assets/brand/logo-h-green.svg?url';
+import { SITE } from '@/config/site';
+import { LOCALES, pathFor, type Locale } from '@/i18n/routes';
+import { useT } from '@/i18n/ui';
+
+interface Props { lang: Locale; alternates: Record<Locale, string> }
+const { lang, alternates } = Astro.props;
+const t = useT(lang);
+const current = Astro.url.pathname;
+
+const nav = [
+  { key: 'turnkey', label: t('nav.turnkey') },
+  { key: 'projects', label: t('nav.projects') },
+  { key: 'technology', label: t('nav.technology') },
+  { key: 'price', label: t('nav.price') },
+  { key: 'about', label: t('nav.about') },
+  { key: 'contact', label: t('nav.contact') },
+] as const;
+---
+<header class="hdr" data-header>
+  <div class="container hdr__in">
+    <a class="hdr__logo" href={`/${lang}/`} aria-label={`${SITE.brand}, ${t('breadcrumb.home')}`}>
+      <img src={logoUrl} alt={SITE.brand} width="160" height="48" />
+    </a>
+
+    <nav class="hdr__nav" id="site-nav" aria-label={t('breadcrumb.label')}>
+      <ul>
+        {nav.map((n) => {
+          const href = pathFor(n.key, lang);
+          const active = current.startsWith(href);
+          return <li><a href={href} aria-current={active ? 'page' : undefined}>{n.label}</a></li>;
+        })}
+      </ul>
+      <div class="hdr__mobile-extra">
+        <a class="btn" href={pathFor('price', lang)}>{t('cta.calc')}</a>
+        <a class="hdr__phone-lg" href={`tel:${SITE.phone}`} data-track="phone_click">{SITE.phoneDisplay}</a>
+      </div>
+    </nav>
+
+    <div class="hdr__right">
+      <div class="lang" role="group" aria-label={t('lang.label')}>
+        {LOCALES.map((l) => (
+          <a href={alternates[l]} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>{l.toUpperCase()}</a>
+        ))}
+      </div>
+      <a class="hdr__phone" href={`tel:${SITE.phone}`} data-track="phone_click">{SITE.phoneDisplay}</a>
+      <a class="btn hdr__cta" href={pathFor('price', lang)}>{t('cta.calc')}</a>
+      <button class="burger" type="button" aria-controls="site-nav" aria-expanded="false" data-burger
+        data-open={t('menu.open')} data-close={t('menu.close')} aria-label={t('menu.open')}>
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="lang-hint" data-lang-hint hidden>
+    <div class="container lang-hint__in">
+      <span data-lang-hint-text></span>
+      <button type="button" class="lang-hint__x" data-lang-hint-close aria-label="×">×</button>
+    </div>
+  </div>
+  <script type="application/json" data-lang-map set:html={JSON.stringify({ alternates, hints: { ro: 'Site-ul este disponibil și în română', ru: 'Сайт доступен на русском', en: 'This site is available in English' } })} />
+</header>
+
+<style>
+  .hdr { position: sticky; top: 0; z-index: 50; background: var(--white); border-bottom: 1px solid #EEE9DF; }
+  .hdr__in { height: var(--header-h); display: flex; align-items: center; gap: 24px; }
+  .hdr__logo { flex: none; display: block; padding: 6px 0; }
+  .hdr__logo img { width: 150px; height: auto; }
+  .hdr__nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 26px; }
+  .hdr__nav li + li { margin: 0; }
+  .hdr__nav a { color: var(--graphite); text-decoration: none; font-size: 15px; padding: 8px 0; border-bottom: 1.5px solid transparent; }
+  .hdr__nav a:hover, .hdr__nav a[aria-current='page'] { color: var(--green); border-bottom-color: var(--green); }
+  .hdr__right { margin-left: auto; display: flex; align-items: center; gap: 18px; }
+  .lang { display: flex; gap: 2px; font-size: 14px; }
+  .lang a { color: var(--muted); text-decoration: none; padding: 10px 6px; min-width: 32px; text-align: center; }
+  .lang a[aria-current='true'] { color: var(--green); font-weight: 500; }
+  .hdr__phone { color: var(--graphite); text-decoration: none; font-size: 15px; white-space: nowrap; }
+  .hdr__cta { min-height: 44px; padding: 10px 18px; font-size: 15px; }
+  .hdr__mobile-extra { display: none; }
+  .burger { display: none; width: 44px; height: 44px; border: 0; background: none; padding: 10px; cursor: pointer; }
+  .burger span { display: block; height: 2px; background: var(--green); margin: 5px 0; transition: transform .2s, opacity .2s; }
+  .burger[aria-expanded='true'] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger[aria-expanded='true'] span:nth-child(2) { opacity: 0; }
+  .burger[aria-expanded='true'] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .lang-hint { background: var(--beige); font-size: 15px; }
+  .lang-hint__in { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 44px; }
+  .lang-hint__x { border: 0; background: none; font-size: 22px; width: 44px; height: 44px; cursor: pointer; color: var(--green); }
+
+  @media (max-width: 1180px) { .hdr__phone { display: none; } .hdr__nav ul { gap: 18px; } }
+  @media (max-width: 1023px) {
+    .burger { display: block; }
+    .hdr__cta { display: none; }
+    .hdr__nav {
+      position: fixed; inset: var(--header-h) 0 0 0; background: var(--white);
+      padding: 24px var(--gutter) 40px; overflow-y: auto; display: none;
+    }
+    .hdr__nav.is-open { display: block; }
+    .hdr__nav ul { flex-direction: column; gap: 0; }
+    .hdr__nav li { border-bottom: 1px solid var(--line); }
+    .hdr__nav a { display: block; font-size: 20px; padding: 14px 0; border: 0; }
+    .hdr__mobile-extra { display: flex; flex-direction: column; gap: 16px; margin-top: 28px; }
+    .hdr__phone-lg { font-size: 22px; color: var(--green); text-decoration: none; }
+  }
+  @media (max-width: 400px) { .hdr__logo img { width: 128px; } .hdr__right { gap: 8px; } .lang a { min-width: 28px; padding-inline: 4px; } }
+</style>

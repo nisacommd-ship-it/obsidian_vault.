@@ -1,0 +1,19 @@
+[
+  {
+    "slug": "bordeias-80",
+    "name": "Bordeiaș-80",
+    "area": 80,
+    "floors": 1,
+    "energyClass": "A+",
+    "bedrooms": null,
+    "bathrooms": null,
+    "image": "casa-exterior",
+    "gallery": ["casa-exterior", "interior-lut", "casa-seara", "familie"],
+    "visualisation": true,
+    "summary": {
+      "ro": "Prima casă din linia Bordeiaș: 80 m² pe un singur nivel, pereți din panouri de paie presate și lut, clasa energetică A+.",
+      "ru": "Первый дом линейки Bordeiaș: 80 м² на одном уровне, стены из прессованной соломы и глины, класс энергоэффективности A+.",
+      "en": "The first house in the Bordeiaș line: 80 m² on one level, pressed straw and clay panel walls, energy class A+."
+    }
+  }
+]

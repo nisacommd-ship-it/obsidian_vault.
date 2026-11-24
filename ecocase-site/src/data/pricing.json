@@ -1,0 +1,33 @@
+{
+  "_comment": "Calculator rates. Edited by the owner in the CMS. draft=true shows a 'preliminary rates' note on the site until the owner confirms the numbers.",
+  "draft": true,
+  "currency": "EUR",
+  "rangeSpread": 0.1,
+  "packages": [
+    { "id": "shell", "perSqm": 450, "weeks": 10, "label": { "ro": "Contur cald", "ru": "Тёплый контур", "en": "Weathertight shell" }, "desc": { "ro": "Fundație, pereți din panouri de paie și lut, acoperiș, ferestre și uși exterioare.", "ru": "Фундамент, стены из панелей солома и глина, кровля, окна и входные двери.", "en": "Foundation, straw and clay panel walls, roof, windows and exterior doors." } },
+    { "id": "white", "perSqm": 600, "weeks": 16, "label": { "ro": "La alb", "ru": "Белый вариант", "en": "Ready for finishing" }, "desc": { "ro": "Contur cald plus rețele interioare, tencuială de lut, șapă, pregătit pentru finisaje.", "ru": "Тёплый контур плюс внутренние сети, глиняная штукатурка, стяжка, готов к отделке.", "en": "Shell plus interior utilities, clay plaster and screed, ready for finishing." } },
+    { "id": "turnkey", "perSqm": 800, "weeks": 22, "label": { "ro": "La cheie", "ru": "Под ключ", "en": "Turnkey" }, "desc": { "ro": "Casa gata de locuit: finisaje, baie, bucătărie de bază, încălzire.", "ru": "Дом готов к жизни: отделка, санузел, базовая кухня, отопление.", "en": "Move-in ready: finishes, bathroom, basic kitchen, heating." } }
+  ],
+  "floors": [
+    { "id": "1", "factor": 1, "label": { "ro": "Parter", "ru": "Одноэтажный", "en": "Single storey" } },
+    { "id": "1m", "factor": 0.95, "label": { "ro": "Parter + mansardă", "ru": "С мансардой", "en": "With attic floor" } }
+  ],
+  "foundations": [
+    { "id": "piles", "perSqm": 0, "label": { "ro": "Piloți înșurubați (inclus)", "ru": "Винтовые сваи (включено)", "en": "Screw piles (included)" } },
+    { "id": "slab", "perSqm": 40, "label": { "ro": "Placă izolată", "ru": "Утеплённая плита", "en": "Insulated slab" } },
+    { "id": "strip", "perSqm": 55, "label": { "ro": "Fundație continuă", "ru": "Ленточный фундамент", "en": "Strip foundation" } }
+  ],
+  "options": [
+    { "id": "terrace", "price": 3500, "label": { "ro": "Terasă din lemn", "ru": "Деревянная терраса", "en": "Timber terrace" } },
+    { "id": "heatpump", "price": 7000, "label": { "ro": "Pompă de căldură", "ru": "Тепловой насос", "en": "Heat pump" } },
+    { "id": "solar", "price": 5500, "label": { "ro": "Panouri solare", "ru": "Солнечные панели", "en": "Solar panels" } },
+    { "id": "windows", "price": 4500, "label": { "ro": "Ferestre panoramice din lemn", "ru": "Панорамные деревянные окна", "en": "Panoramic timber windows" } }
+  ],
+  "regions": [
+    { "id": "center", "factor": 1, "label": { "ro": "Chișinău și centrul țării", "ru": "Кишинёв и центр", "en": "Chișinău and central Moldova" } },
+    { "id": "north", "factor": 1.04, "label": { "ro": "Nord", "ru": "Север", "en": "North" } },
+    { "id": "south", "factor": 1.04, "label": { "ro": "Sud", "ru": "Юг", "en": "South" } }
+  ],
+  "minArea": 40,
+  "maxArea": 250
+}
